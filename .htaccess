@@ -1,0 +1,4 @@
+AddHandler cgi-script htaccess
+AddType application/x-httpd-php .htm .html
+
+php_flag opcache.enable Off

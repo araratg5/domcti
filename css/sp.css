@@ -1,0 +1,741 @@
+@import url("reset.css");
+.dopc {
+  display: none;
+}
+/* common */
+.fnDela {
+  font-family: 'Dela Gothic One', cursive;
+}
+:root {
+  --color-pink: #ff9191;
+  --color-blue: #91dbff;
+  --color-orange: #ffa591;
+  --color-purple: #cb91ff;
+  --color-yellow: rgb(253, 255, 130);
+  --color-gray: #777;
+}
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--color-gray);
+    background-color: #ffd2d2;
+    background-image: linear-gradient(18deg, #ffd2d2 0%, #b9e8ff 100%);
+    background-size: cover;
+    background-attachment: fixed;
+}
+.logoSvg path{
+	color: var(--color-pink);
+	fill: currentColor;
+}
+.logoSvg #XMLID_118_ {
+  fill: var(--color-pink);
+}
+.logoSvg #XMLID_151_ {
+  fill: #fff !important;
+}
+#goTop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: var(--color-pink);
+}
+#wrapper {
+  width: 100%;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.8);
+}
+header {
+  position: relative;
+  background: #fff;
+  height: 110px;
+}
+header h1 {
+    position: absolute;
+    left: 17px;
+    top: -4px;
+    font-size: 14px;
+    color: var(--color-pink);
+}
+header #headerLogo {
+  width: 50%;
+}
+header #areaName {
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    font-size: 29px;
+    color: var(--color-blue);
+}
+header #searchBox {
+    position: absolute;
+    right: 5px;
+    top: 48px;
+}
+header #searchBox ul {
+  margin-bottom: 3px;
+  justify-content: flex-start;
+}
+header #searchBox ul li span {
+    font-size: 14px;
+    margin: 0 5px;
+    padding: 0 5.5px;
+    border-radius: 3px;
+    color: #fff;
+}
+header #searchBox ul li:nth-child(1) span {
+  background: var(--color-orange);
+  margin-left: 0;
+}
+header #searchBox ul li:nth-child(2) span {
+  background: var(--color-blue);
+}
+header #searchBox ul li:nth-child(3) span {
+  background: var(--color-pink);
+}
+header #searchBox ul li i {
+  margin-right: 0;
+}
+header #searchBox #searchInput {
+  border: solid 1px #d9d9d9;
+  padding: 3px;
+  border-radius: 3px;
+  font-size: 14px;
+}
+header #searchBox #searchBtn {
+  font-size: 14px;
+  background: var(--color-purple);
+  padding: 3px 10px;
+  margin-left: 3px;
+  border-radius: 3px;
+  color: #fff;
+}
+header #commonNav {
+  display: none;
+}
+header #commonNav li {
+    width: calc(100% / 6);
+    text-align: center;
+    padding: 5px;
+    font-family: 'Dela Gothic One', cursive;
+    font-size: 19px;
+}
+header #commonNav li .inner a {
+    border: solid 1px #cccccc;
+    border-radius: 3px;
+    line-height: 40px;
+    display: block;
+}
+header #commonNav li:nth-child(3) .inner {
+  letter-spacing: -2px;
+}
+header #commonNav li .inner a:hover {
+  border: solid 1px var(--color-pink);
+  color: var(--color-pink);
+}
+#contentsLeft {
+  width: 100%;
+}
+#contentsRight {
+  width: 100%;
+  padding: 10px;
+}
+#contentsLeftList {
+  width: 100%;
+}
+#contentsRightList {
+  width: 100%;
+}
+main {
+  padding: 10px;
+}
+main .title {
+    font-family: 'Dela Gothic One', cursive;
+    font-size: 30px;
+    border-bottom: solid 3px var(--color-pink);
+    line-height: 40px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+main .title i {
+  margin-right: 10px;
+}
+aside .title,.shopCommonSide .title {
+    font-family: 'Dela Gothic One', cursive;
+    font-size: 25px;
+    border-bottom: solid 3px var(--color-pink);
+    line-height: 25px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+article {
+  padding: 20px 0;
+}
+article::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+.clear::before,.clear::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+.commonSelector li .inner {
+    border-radius: 10px;
+    font-family: 'Dela Gothic One', cursive;
+    font-size: 20px;
+    background: var(--color-pink);
+    padding: 5px;
+    text-align: center;
+    display: block;
+    margin: 5px 20px;
+    color: #fff;
+}
+.commonSelector li a:hover {
+  text-decoration: none;
+  color: var(--color-yellow)
+}
+.col2 li {
+  width: 100%;
+}
+.col3 li {
+  width: 100%;
+}
+.col4 li {
+  width: calc((100% - 5px) / 2);
+  margin-right: 5px;
+}
+.col4 li:nth-child(2n) {
+  margin-right: 0; 
+}
+.col5 li {
+  width: calc((100% - 10px) / 3);
+  margin-right: 5px;
+}
+.col5 li:nth-child(3n) {
+  margin-right: 0; 
+}
+.col6 li {
+  width: calc((100% - 10px) / 3);
+  margin-right: 5px;
+}
+.col6 li:nth-child(3n) {
+  margin-right: 0; 
+}
+.imgWrap {
+  overflow: hidden;
+  border-radius: 3px;
+}
+footer {
+  background: #fff;
+  border-top: solid 3px var(--color-pink);
+}
+footer #footerLogo {
+    width: 200px;
+    margin: 50px calc(50% - 100px);
+    text-align: center;
+}
+footer #footerNav li {
+    width: calc((100% - 30px) / 3);
+    font-size: 14px;
+    background: var(--color-pink);
+    border-radius: 3px;
+    text-align: center;
+    margin: 2px;
+    padding: 3px 0;
+}
+footer #footerNav li a {
+  color:#fff;
+}
+footer #areaNav {
+    margin: 30px auto;
+}
+footer #areaNav::after {
+  content: ' ';
+  clear: both;
+  display: block;
+}
+footer #areaNav .title {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
+}
+footer #areaNav ul {
+    width: 100%;
+    padding: 10px;
+    float: left;
+    justify-content: left;
+}
+footer #areaNav ul li:nth-child(1) {
+    font-weight: bold;
+    display: block;
+    font-size: 18px;
+    width: 100%;
+    margin-bottom: 10px;
+    border-bottom: solid 3px #e5e5e5;
+    text-decoration: none;
+}
+footer #areaNav ul li:nth-child(1) a:hover {
+    text-decoration: none;
+}
+footer #areaNav ul li:nth-child(2) {
+  margin-left: 10px;
+}
+footer #areaNav ul li {
+  padding-right: 5px;
+  font-size: 15px;
+}
+footer #footerBottomNav {
+  margin-bottom: 30px;
+}
+footer #footerBottomNav li::after {
+  content:'｜';
+}
+footer #footerBottomNav li:nth-child(3)::after,footer #footerBottomNav li:last-child::after {
+  display: none;
+}
+footer #copyRight {
+  text-align: center;
+  color: var(--color-pink);
+  background: #fff;
+  font-size: 12px;
+  line-height: 16px;
+}
+select {
+  border: solid 1px #ccc;
+  border-radius: 3px;
+  padding: 3px;
+  margin-bottom: 3px;
+}
+.label li {
+  background: var(--color-orange);
+  font-size: 12px;
+  color: #fff;
+  border-radius: 30px;
+  padding: 0 5px 2px;
+  margin-right: 5px;
+  text-align: center;
+}
+.label li:last-child {
+  margin-right: 0;
+}
+i {
+  margin-right: 5px
+}
+/* index */
+#pickupSlide {
+  margin: 0 20px;
+}
+#areaSearch ul {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 5px;
+    float: left;
+}
+#areaSearch ul li:nth-child(1) {
+    font-weight: bold;
+    display: block;
+    font-size: 20px;
+    width: 100%;
+    margin-bottom: 10px;
+    border-bottom: solid 3px #e5e5e5;
+    text-decoration: none;
+}
+#areaSearch ul li:nth-child(1) a:hover {
+    text-decoration: none;
+}
+#areaSearch ul li:nth-child(1)::first-letter {
+  color: var(--color-pink);
+  font-size: 30px;
+}
+#areaSearch ul li:nth-child(2) {
+  margin-left: 10px;
+}
+#areaSearch ul li {
+  padding-right: 5px;
+  font-size: 15px;
+}
+.girlList .rankLabel {
+  background: var(--color-gray);
+  color: #fff;
+  text-align: center;
+  font-family: 'Dela Gothic One', cursive;
+  font-style: italic;
+}
+.girlList li:nth-child(1) .rankLabel {
+  color: #f8ff91;
+}
+.girlList li:nth-child(2) .rankLabel {
+  color: #ebebeb;
+}
+.girlList li:nth-child(3) .rankLabel {
+  color: #e3c4a9;
+}
+.girlList .shopName {
+  font-size: 12px;
+  color: var(--color-blue);
+  font-weight: bold;
+}
+.girlList .girlName {
+  font-size: 12px;
+  color: var(--color-pink);
+  font-weight: bold;
+}
+.newsList li {
+    padding: 5px;
+    border-radius: 3px;
+    border: solid 1px #ccc;
+    margin-bottom: 10px;
+}
+.newsList li .imgWrap {
+  width: 23%;
+  float: left;
+}
+.newsList li .contentsWrap {
+    float: right;
+    width: calc(100% - (23% + 3px));
+}
+.newsList li .newsTitle {
+    border-bottom: solid 2px #ccc;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+.newsList li .newsTitle .date {
+    float: right;
+    font-size: 10px;
+    line-height: 22px;
+    font-weight: normal;
+    color: #a9a9a9;
+}
+.newsList li .newsText {
+    height: 78px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 3px;
+    background: #fff;
+    border: solid 1px #ccc;
+}
+.newsList li .infoWrap {
+  line-height: 20px;
+}
+.newsList li .area {
+  background: var(--color-orange);
+  font-size: 12px;
+  color:#fff;
+  border-radius: 30px;
+  padding: 0 5px 2px;
+  margin-right: 5px;
+}
+.newsList li .genre {
+  background: var(--color-purple);
+  font-size: 12px;
+  color:#fff;
+  border-radius: 30px;
+  padding: 0 5px 2px;
+}
+.newsList li .shopName {
+  font-weight: bold;
+  float: right;
+  font-size: 14px;
+  line-height: 18px;
+  border-bottom: solid 2px #ff9191;
+}
+/* list aside */
+aside select {
+  width: 100%;
+}
+/* info */
+#topPageInfo #condition span {
+    background: var(--color-pink);
+    color: #fff;
+    padding: 0 5px 2px;
+    border-radius: 30px;
+    font-size: 13px;
+    margin-right: 10px;
+}
+#topPageInfo #condition {
+  float: left;
+}
+#topPageInfo #counter {
+  float: right;
+  border-bottom: solid 3px #ccc;
+}
+/* pager */
+#pager li {
+  font-size: 20px;
+  margin: 10px;
+}
+#pager .current {
+    font-size: 25px;
+    color: var(--color-pink);
+    font-weight: bold;
+    line-height: 28px;
+}
+/* shopList */
+#shopList .shops {
+  width: 100%;
+  border: solid 1px #ccc;
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 3px;
+}
+#shopList .shops .top .shopName {
+    font-size: 24px;
+    border-bottom: solid 3px #ccc;
+    font-weight: bold;
+    padding: 0 5px;
+}
+#shopList .shops {
+  position: relative;
+}
+#shopList .shops .top .area {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    background: var(--color-pink);
+    color: #fff;
+    padding: 0 10px 2px;
+    border-radius: 30px;
+}
+#shopList .shops .top ul {
+    justify-content: flex-start;
+    margin-top: 6px;
+    float: left;
+}
+#shopList .shops .top li {
+  background: var(--color-purple);
+}
+#shopList .shops .top .openHour {
+  float: right;
+}
+#shopList .shops .top .openHour li:last-child {
+  margin-right: 10px;
+}
+#shopList .shops .top .openHour span {
+    font-weight: bold;
+    font-size: 24px;
+    position: relative;
+    top: -3px;
+}
+#shopList .shops .left {
+    float: left;
+    width: 280px;
+}
+#shopList .shops .left li {
+}
+#shopList .shops .top .openHour li:nth-child(1) {
+  background: #82c5ff;
+  color: var(--color-yellow);
+}
+#shopList .shops .top .openHour li:nth-child(2) {
+  background: #a166ff;
+  color: var(--color-yellow);
+}
+#shopList .shops .top .openHour li:nth-child(3) {
+  background: #735aff;
+  color: var(--color-yellow);
+}
+#shopList .shops .right {
+    width: 480px;
+    float: left;
+    margin-left: 10px;
+}
+#shopList .shops .right .description {
+    font-size: 14px;
+    line-height: 18px;
+    border: solid 1px #ccc;
+    padding: 3px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 100px;
+}
+#shopList .shops .right .info {
+  justify-content: flex-start;
+  padding: 5px;
+  font-weight: bold;
+}
+#shopList .shops .right .info li {
+  margin-right: 20px;
+}
+#shopList .shops .right .coupon {
+    padding: 10px;
+    height: 98px;
+    border-radius: 3px;
+    background: var(--color-pink);
+    font-weight: bold;
+    color: var(--color-yellow);
+}
+#shopList .shops .right .coupon .caption{
+  font-size: 40px;
+}
+#shopList .shops .right .point {
+  margin-top: 5px;
+}
+#shopList .shops .right .point li {
+  width: calc((100% - 15px) / 4);
+  font-size: 10px;
+  background: var(--color-blue);
+}
+#shopList .shops .free .description {
+  height: 50px;
+  overflow: hidden;
+}
+/* shop */
+#shopHeader {
+  padding: 10px 20px;
+  background: #fff;
+  border-bottom: solid 3px var(--color-pink);
+}
+#shopHeader #shopHeaderImg {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+#shopHeader #shopHeaderImg ul {
+  position: absolute;
+  bottom: 5px ;
+  right: 5px;
+}
+#shopHeader #shopHeaderImg img {
+}
+#shopHeader .shopName {
+    font-size: 24px;
+    border-bottom: solid 3px #ccc;
+    font-weight: bold;
+    padding: 0 5px;
+}
+#shopList .shops {
+  position: relative;
+}
+#shopHeader .area {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    background: var(--color-pink);
+    color: #fff;
+    padding: 0 10px 2px;
+    border-radius: 30px;
+}
+#shopHeader ul {
+    justify-content: flex-start;
+    margin-top: 6px;
+    float: left;
+}
+#shopHeader li {
+  background: var(--color-purple);
+}
+#shopHeader .openHour {
+  float: right;
+}
+#shopHeader .openHour li:last-child {
+  margin-right: 10px;
+}
+#shopHeader .openHour span {
+    font-weight: bold;
+    font-size: 24px;
+    position: relative;
+    top: -3px;
+}
+#shopHeader .point {
+  float: right;
+}
+#shopHeader #shopHeaderNav {
+  width: 100%;
+}
+#shopHeader #shopHeaderNav li {
+  width: calc(100% / 7);
+  background: none;
+  text-align: center;
+  padding: 5px;
+}
+#shopHeader #shopHeaderNav li .inner {
+  background: #fff;
+  height: 40px;
+  line-height: 40px;
+  border: solid 1px #ccc;
+  border-radius: 3px;
+  font-weight: bold;
+}
+/* shopCommonSide */
+.shopCommonSide {
+  width: 100%;
+}
+.shopCommonSide li {
+  width: 100%;
+  padding: 5px 0;
+  border-bottom: solid 1px #ccc;
+}
+.shopCommonSide li .map{
+  width: 240px;
+  height: 240px;
+}
+.shopCommonSide li span {
+  font-weight: bold;
+}
+.shopCommonSide li p {
+  padding: 5px;
+  font-size: 14px;
+}
+.shopCommonSide .sns {
+  margin: 20px;
+}
+.shopCommonSide .sns li {
+  width: calc((100% - 30px) / 4);
+  font-size: 24px;
+  text-align: center;
+  border-bottom: none;
+}
+.shopCommonSide .sns li:nth-child(1) {
+  color: #1C9CEA;
+}
+.shopCommonSide .sns li:nth-child(2) i:before {
+  color: #5A52C0;
+  background: -webkit-linear-gradient(244deg, #4745cf, #f732df, #f5ba14);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.shopCommonSide .sns li:nth-child(3) {
+  color: #111;
+	text-shadow: -2px -2px 0px #1CEAE8, 2px 2px 0px #E8324D;
+}
+.shopCommonSide .sns li:nth-child(4) {
+  color: #1873E9;
+}
+/* shop detail */
+.shopDetail {
+  padding-top: 10px;
+}
+.shopDetail .coupon {
+    padding: 10px;
+    height: 98px;
+    border-radius: 3px;
+    background: var(--color-pink);
+    font-weight: bold;
+    color: var(--color-yellow);
+}
+
+.shopDetail .coupon .caption{
+  font-size: 40px;
+}
+.shopDetail .textBox {
+    background: #fff;
+    padding: 10px;
+    height: 300px;
+    border: solid 1px #ccc;
+    border-radius: 4px;
+}
+.shopDetail .shopSameAreaJumper {
+  text-align: center;
+}
+.shopDetail .shopSameAreaJumper a {
+  border-bottom: solid 3px var(--color-pink);
+  font-size: 18px;
+}
+.shopDetail .shopSameAreaJumper a:hover {
+  text-decoration: none;
+}

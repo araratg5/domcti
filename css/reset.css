@@ -1,0 +1,37 @@
+
+/*
+font-family: 'Dela Gothic One', cursive;
+font-family: 'Noto Sans JP', sans-serif;
+*/
+*,*::before,*::after{box-sizing:border-box}body,h1,h2,h3,h4,p,figure,blockquote,dl,dd{margin:0}ul[role="list"],ol[role="list"]{list-style:none}html:focus-within{scroll-behavior:smooth}body{min-height:100vh;text-rendering:optimizeSpeed;line-height:1.5}a:not([class]){text-decoration-skip-ink:auto}img,picture{max-width:100%;display:block}input,button,textarea,select{font:inherit}@media(prefers-reduced-motion:reduce){html:focus-within{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
+ol, ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
+}
+img {
+    max-width: 100%;
+    display: block;
+}
+table{
+    border-collapse: collapse;
+}
+a {
+  color: #333;
+  cursor: pointer;
+  /* transition: all 0.5s; */
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-pink);
+  text-decoration: underline;
+}
+.slick-prev:before,.slick-next:before {
+  color: #777 !important;
+}
+.clear {
+  clear: both;
+}
