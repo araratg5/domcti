@@ -1,22 +1,5 @@
 <?php 
   include_once($_SERVER['DOCUMENT_ROOT'].'/lib/func.php');
-  if ($_SERVER["REQUEST_METHOD"]=="POST") {
-    if(!$_REQUEST['reset']){
-      $_SESSION['customer_id'] = $_REQUEST['customer_id'];
-      $_SESSION['customer_name'] = $_REQUEST['customer_name'];
-      $_SESSION['tel'] = $_REQUEST['tel'];
-      $_SESSION['address'] = $_REQUEST['address'];
-      $_SESSION['shop_id'] = $_REQUEST['shop_id'];
-    } else {
-      $_SESSION['customer_id'] = '';
-      $_SESSION['customer_name'] = '';
-      $_SESSION['tel'] = '';
-      $_SESSION['address'] = '';
-      $_SESSION['shop_id'] = '';
-      header('Location: /customer.php');
-    }
-  }
-  $_SESSION['customer_p'] = $_REQUEST['p'];
 
   $searchConditionAry[] = 1;
   if($_SESSION['customer_id']){
@@ -41,34 +24,12 @@
   $allCount = dbCount($sql);
   
   $perCount = 300;
-  $pagerData = getPager($allCount,$perCount,$_GET['p']);
+  $pagerData = getPager($allCount,$perCount,$_SESSION['customer_p']);
   $start = ($pagerData['current_page'] - 1) * $perCount;
   
   $sql = "SELECT * FROM `customer_data` WHERE {$searchCondition} ORDER BY `id` DESC LIMIT {$start},{$perCount}";
   $customerDataAry = getRecord($sql);
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-	<meta charset="UTF-8">
-	<link rel="icon" href="favicon.ico" size="16x16" type="image/png">
-	<link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
-	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-	<title>ドM会員管理システム</title>
-	<style>
-	.select2-results , .select2-results__options {
-	    max-height: 500px !important;
-	    height: 500px !important;
-	}
-	</style>
-</head>
-<body id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
-  <input type="hidden" id="shopid" value="<?php echo $_SESSION['id'] ?>" >
-  <input type="hidden" id="mode" value="customer" >
-  <div id="wrapper">
-<?php include_once(DOCUMENT_ROOT.'/include/navi.php') ?>
-    <main>
       <article id="customerTableWrapper" class="tableWrapper" >
 	<div class="headinfo">
         	<div class="title">会員情報検索<div class="btn customerEdit" id="customerAddBtn" >新規作成</div></div>
@@ -168,45 +129,3 @@ foreach((array)$customerDataAry AS $customerData){
 </div>
 <?php } ?>
       </article>
-    </main>
-    <div class="clear"></div>
-  </div>
-</body>
-</html>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js" ></script>
-<link rel="stylesheet" href="https://cdn.rawgit.com/jonthornton/jquery-timepicker/3e0b283a/jquery.timepicker.min.css">
-<script src="https://cdn.rawgit.com/jonthornton/jquery-timepicker/3e0b283a/jquery.timepicker.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-$('#select2').select2({
-    width: 'resolve'
-})
-</script>
-<script type="text/javascript" src="/js/common_new.js?<?php echo BUSTING_DATE ?>"></script>
-<script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyDTr3tesD6Sh_lXbrVlLZ8_jpuQ9Q30Ar4",
-    authDomain: "araratcti.firebaseapp.com",
-    databaseURL: "https://araratcti-default-rtdb.firebaseio.com",
-    projectId: "araratcti",
-    storageBucket: "araratcti.appspot.com",
-    messagingSenderId: "3266214634",
-    appId: "1:3266214634:web:be458a761561235cd0f593"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-</script>
-<script type="text/javascript" src="/js/callWaitNew.js?<?php echo BUSTING_DATE ?>"></script>
-<div class="loading"><div class="fl fl-spinner spinner"><div class="cube1"></div><div class="cube2"></div></div></div>

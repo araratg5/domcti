@@ -302,7 +302,9 @@ th,td {
     border-spacing: 0;
     padding: 6px 6px;
 }
-
+.w100 {
+  width: 100%;
+}
 .dataBox th, .dataBox .head  {
     background: #45659a;
     color:#fff;
@@ -310,19 +312,6 @@ th,td {
 
 .dataBox td {
     padding: 6px 6px 0;
-}
-
-#historyList tbody tr:hover {
-  background: #e5f3fb !important;
-  cursor: pointer;
-}
-#historyList tbody tr.current {
-  position: relative;
-}
-#historyList tbody tr.current {
-    opacity: 0.5;
-    background-color: #b9ff5c66 !important;
-    animation: flash 1.5s infinite linear;
 }
 
 @keyframes flash {
@@ -413,7 +402,41 @@ td .btn:nth-child(n+2) {
     margin-top: 10px;
     display: inline-block;
 }
-/* #top */
+/* #history */
+#latestList {
+  width: 100%;
+}
+#latestList td:nth-child(1) {
+  width: 160px !important;
+}
+#latestList td:nth-child(2) {
+  width: 90px !important;
+}
+#latestList td:nth-child(3) {
+  width: 260px !important;
+}
+#latestList td:nth-child(4) {
+  width: 130px !important;
+  text-align: center;
+}
+#latestList td:nth-child(5) {
+  width: 280px !important;
+}
+#latestList td:nth-child(7) {
+  width: 65px !important;
+  text-align: center;
+}
+#latestList tbody tr:hover {
+  background: #e5f3fb !important;
+  cursor: pointer;
+}
+tbody tr.current {
+  position: relative;
+  opacity: 1;
+  background-color: #e5f3fb !important;
+  /* animation: flash 1.5s infinite linear; */
+}
+/* #history */
 #historyList {
   width: 100%;
 }
@@ -437,7 +460,18 @@ td .btn:nth-child(n+2) {
   width: 65px !important;
   text-align: center;
 }
-
+#historyList tbody tr:hover {
+  background: #e5f3fb !important;
+  cursor: pointer;
+}
+#historyList tbody tr.current {
+  position: relative;
+}
+#historyList tbody tr.current {
+    opacity: 1;
+    background-color: #e5f3fb !important;
+    /* animation: flash 1.5s infinite linear; */
+}
 /* history */
 #searchBox {
   width: 100%;
@@ -702,7 +736,7 @@ td .btn:nth-child(n+2) {
   background: #fff;
 }
 .slipList.current {
-  background: #fbffba;
+  background: #e5f3fb;
 }
 .slipList ul {
   margin-bottom: 5px;

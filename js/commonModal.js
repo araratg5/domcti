@@ -36,10 +36,7 @@ function usageModalLaunch(cid,uid) {
 }
 $(".timePicker").timepicker();
 $("#startDate,#endDate,.startDate").datepicker({ dateFormat: "yy年mm月dd日" });
-function parentReload(mode) {
-  $('.loading').show();
-  location.reload();
-}
+
 $(document).on("change", ".colEdit", function () {
   $this = $(this);
   var id = $this.closest('.dataBox').data("id");
@@ -120,3 +117,25 @@ $(document).on("click", "#navi a , .searchBtn", function () {
   $(this).css('pointer-events','none');
   $('.loading').show();
 });
+let closeTime = 300000;//300sec=5min
+let timer;
+let initializeFormData = JSON.stringify($('form').serializeArray());
+$(document).on("click change", "input,textarea,select", function () {
+  clearTimeout(timer);
+  timer = setTimeout(function(){
+    let currentFormData = JSON.stringify($('form').serializeArray());
+    if(initializeFormData == currentFormData){
+      open('about:blank', '_self').close();
+    } else {
+      if(window.confirm('データが保存されていませんがウィンドウを閉じてよろしいですか？')){
+        open('about:blank', '_self').close();
+      } else {
+        $('input[type="text"]').trigger("click");
+      }
+    }
+  }, closeTime);
+});
+
+timer = setTimeout(function(){
+  open('about:blank', '_self').close();
+}, closeTime);

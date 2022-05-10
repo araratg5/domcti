@@ -23,6 +23,8 @@ define("SITE_DB_DBNAME_CTI",	'dom_cti');
 define("SITE_DB_USER_CTI",		'araratcti');
 define("SITE_DB_PASS_CTI",		'arrtcti2022');
 
+define("BUSTING_DATE",		'20220510');
+
 define("SALT",			'EVW53pu3Gm');
 
 ini_set('xdebug.var_display_max_children', -1);
@@ -30,8 +32,6 @@ ini_set('xdebug.var_display_max_data', -1);
 ini_set('xdebug.var_display_max_depth', -1);
 
 define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
-
-define("BUSTING_DATE",			'20220109');
 
 //mysqli_report(MYSQLI_REPORT_STRICT);
 
@@ -113,6 +113,24 @@ try{
       $res[] = $row;
     }
     return $res;
+  }
+}catch(Exception $e){
+  echo 'exception->'.$e->getMessage();
+}
+}
+
+function getRecordWithAllCount($sql,$mode = 0){
+try{
+  $mysqli = dbOpen($mode);
+
+  if ($result = $mysqli->query($sql)) {
+    // 連想配列を取得
+    while ($row = $result->fetch_assoc()) {
+      $res[] = $row;
+    }
+    $num_query = $mysqli->query('SELECT FOUND_ROWS()');
+    $result = [$res,$num_query->fetch_row()];    
+    return $result;
   }
 }catch(Exception $e){
   echo 'exception->'.$e->getMessage();

@@ -8,7 +8,6 @@ waitElem.fire = {
   },
 
   setParameters: function () {
-    console.log($('#shopid').val());
     this.shopId = $('#shopid').val();
     this.firstExecuted = 0;
     this.waitElemDataStore = new Firebase(
@@ -21,7 +20,6 @@ waitElem.fire = {
     this.waitElemDataStore.child(this.shopId).on("child_added", function (data) {
       if(self.firstExecuted == 1){
         var json = data.val();
-        console.log(json);
         $.ajax({
           url: "ajax/callReceiver.php",
           type: "POST",
@@ -36,7 +34,7 @@ waitElem.fire = {
           let cid = '';
           let name = '';
           let address = '';
-          customerModalLaunch(dataObj?.id, dataObj.num, 'call')
+          customerModalLaunch(dataObj?.id, dataObj.num, 1)
           if(dataObj?.cid!=null){
             cid = dataObj?.cid;
           }

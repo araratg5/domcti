@@ -1,7 +1,8 @@
-$(document).on("click","#historyList tr,.customerEdit",function () {
+$(document).on("click","#latestList tr,#historyList tr,.customerEdit",function () {
     customerModalLaunch(
       $(this).data("customer-id"),
-      $(this).data("customer-num")
+      $(this).data("customer-num"),
+      0
     );
   }
 );
@@ -11,21 +12,39 @@ $(document).on("click",".usageAdd,.usageEdit",function () {
     $(this).data("uid"),
   );
 });
-function customerModalLaunch(id, num, mode) {
+
+let showingNumberListjson;
+let showingNumberListArray = [];
+let showingNumberCount = 1;
+function customerModalLaunch(id, num, isCall) {
   if(id == undefined || id == null){
     id = '';
   }
   if(num == undefined || num == null){
     num = '';
   }
-  if(mode == undefined || mode == null){
-    mode = '';
+  if(isCall == undefined || isCall == null){
+    isCall = '';
   }
-  window.open(
-    "customerData.php?cid=" + id + "&num=" + num + "&mode=" + mode,
-    "window_cid" + num,
-    "width=870,height=760,scrollbars=yes"
-  );
+  showingNumberListjson = localStorage.getItem('showing_number_list');
+  if(showingNumberListjson){
+    showingNumberListArray = JSON.parse(showingNumberListjson);
+  }
+  showingNumberCount = showingNumberListArray.length + 1;
+  
+  if(!showingNumberListArray.filter(e => e == num).length){
+    let screenWidth=parseInt(screen.availWidth);
+    var leftPos=screenWidth-870;
+    var topPos = showingNumberCount * 30;
+    window.open(
+      "customerData.php?cid=" + id + "&num=" + num + "&isCall=" + isCall,
+      "window_cid" + num,
+      "width=870,height=760,scrollbars=yes,top=" + topPos + "px,left=" + leftPos + "px"
+    );
+    showingNumberListArray.push(num);
+    showingNumberListJson = JSON.stringify(showingNumberListArray, undefined, 1);
+    localStorage.setItem('showing_number_list', showingNumberListJson);
+  }
 }
 function usageModalLaunch(cid,uid) {
   window.open(
@@ -36,9 +55,68 @@ function usageModalLaunch(cid,uid) {
 }
 $(".timePicker").timepicker();
 $("#startDate,#endDate,.startDate").datepicker({ dateFormat: "yy年mm月dd日" });
-function parentReload(mode) {
+function modalClose(num) {
+  let mode = $('#mode').val()
   $('.loading').show();
-  location.reload();
+  switch(mode){
+    case 'top':
+      $.ajax({
+        url: "ajax/callUpdate.php",
+        type: "POST",
+        cache: false,
+      })
+      .done(function (data) {
+        $('#latestTableWrapper').html(data);
+        $('.loading').hide();
+      })
+      .fail(function (jqXHR, textStatus, errorThrown) {
+      });
+      break;
+    case 'history':
+      $.ajax({
+        url: "ajax/historyUpdate.php",
+        type: "POST",
+        cache: false,
+      })
+      .done(function (data) {
+        $('#historyTableWrapper').html(data);
+        $('.loading').hide();
+      })
+      .fail(function (jqXHR, textStatus, errorThrown) {
+      });
+      break;
+    case 'customer':
+      $.ajax({
+        url: "ajax/customerUpdate.php",
+        type: "POST",
+        cache: false,
+      })
+      .done(function (data) {
+        $('#customerTableWrapper').html(data);
+        $('.loading').hide();
+      })
+      .fail(function (jqXHR, textStatus, errorThrown) {
+      });
+      break;
+    case 'usage':
+      $.ajax({
+        url: "ajax/usageUpdate.php",
+        type: "POST",
+        cache: false,
+      })
+      .done(function (data) {
+        $('#usageTableWrapper').html(data);
+        $('.loading').hide();
+      })
+      .fail(function (jqXHR, textStatus, errorThrown) {
+      });
+      break;
+  }
+  showingNumberListArray = showingNumberListArray.filter(function(v){
+    return ! num.includes(v);
+  });
+  showingNumberListJson = JSON.stringify(showingNumberListArray, undefined, 1);
+	localStorage.setItem('showing_number_list', showingNumberListJson);
 }
 $(document).on("change", ".colEdit", function () {
   $this = $(this);
@@ -119,4 +197,20 @@ $(document).on("click", ".dataDelete", function () {
 $(document).on("click", "#navi a , .searchBtn", function () {
   $(this).css('pointer-events','none');
   $('.loading').show();
+});
+$(document).on("click", "#latestList td", function () {
+  $('#latestList tr').removeClass('current');
+  $(this).parent('tr').addClass('current');
+});
+$(document).on("click", "#historyList td", function () {
+  $('#historyList tr').removeClass('current');
+  $(this).parent('tr').addClass('current');
+});
+$(document).on("click", ".usageEdit", function () {
+  $('#usageList tr').removeClass('current');
+  $(this).parents('tr').addClass('current');
+});
+$(document).on("click", ".customerEdit", function () {
+  $('#customerList tr').removeClass('current');
+  $(this).parents('tr').addClass('current');
 });

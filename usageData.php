@@ -53,11 +53,11 @@ $girlDataAry = getRecord($sql,1);
 <head>
 	<meta charset="UTF-8">
 	<link rel="icon" href="favicon.ico" size="16x16" type="image/png">
-	<link rel="stylesheet" href="css/style.css" media="all">
+	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<title>ドM会員管理システム</title>
 </head>
-<body onUnload="window.opener.parentReload('<?php echo $_GET['mode'] ?>')" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
+<body onUnload="window.opener.modalClose()" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
 	<div id="slipListWrapper">
 <?php
 $usageData['option'] = json_decode($usageData['p_option']);
@@ -122,4 +122,4 @@ $usageData['option'] = json_decode($usageData['p_option']);
 <script src="https://cdn.rawgit.com/jonthornton/jquery-timepicker/3e0b283a/jquery.timepicker.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script type="text/javascript" src="/js/commonModal.js"></script>
+<script type="text/javascript" src="/js/commonModal.js?<?php echo BUSTING_DATE ?>"></script>

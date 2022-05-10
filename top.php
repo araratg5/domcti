@@ -9,20 +9,21 @@
 	<meta charset="UTF-8">
 	<link rel="icon" href="favicon.ico" size="16x16" type="image/png">
 	<link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
-	<link rel="stylesheet" href="css/style.css" media="all">
+	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
 	<title>ドM会員管理システム</title>
 </head>
 <body id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
   <input type="hidden" id="shopid" value="<?php echo $_SESSION['id'] ?>" >
+  <input type="hidden" id="mode" value="top" >
   <div id="wrapper">
 <?php include_once(DOCUMENT_ROOT.'/include/navi.php') ?>
     <main>
-      <article id="callHistoryTableWrapper" class="tableWrapper" >
-	<div class="headinfo">
-        	<div class="title">着信履歴（最新300件）<div class="btn customerEdit" id="customerAddBtn" >会員新規作成</div></div>
-		<div class="loginName"><?php echo $_SESSION['shop_name'] ?>様</div>
-	</div>
-        <table id="historyList" >
+      <article id="latestTableWrapper" class="tableWrapper" >
+        <div class="headinfo">
+          <div class="title">着信履歴（最新300件）<div class="btn customerEdit" id="customerAddBtn" >会員新規作成</div></div>
+          <div class="loginName"><?php echo $_SESSION['shop_name'] ?>様</div>
+        </div>
+        <table id="latestList" class="w100" >
           <thead>
             <tr>
               <th style="width:50px !important;">No</th>
@@ -78,7 +79,7 @@ switch ($callUserData['rating']) {
 <script src="https://cdn.rawgit.com/jonthornton/jquery-timepicker/3e0b283a/jquery.timepicker.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script type="text/javascript" src="/js/common_new.js"></script>
+<script type="text/javascript" src="/js/common_new.js?<?php echo BUSTING_DATE ?>"></script>
 <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
 <script type="module">
   // Import the functions you need from the SDKs you need
@@ -100,5 +101,5 @@ switch ($callUserData['rating']) {
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
 </script>
-<script type="text/javascript" src="/js/callWaitNew.js"></script>
+<script type="text/javascript" src="/js/callWaitNew.js?<?php echo BUSTING_DATE ?>"></script>
 <div class="loading"><div class="fl fl-spinner spinner"><div class="cube1"></div><div class="cube2"></div></div></div>

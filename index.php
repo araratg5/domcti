@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
 <head>
 	<meta charset="UTF-8">
 	<link rel="icon" href="favicon.ico" size="16x16" type="image/png">
-	<link rel="stylesheet" href="css/style.css" media="all">
+	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
 	<title>ドM会員管理システム</title>
 </head>
 <body id="index" >

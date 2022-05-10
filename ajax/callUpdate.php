@@ -3,8 +3,11 @@
   $sql = "SELECT * FROM `call_history` WHERE `shop_id` = '{$_SESSION['id']}' ORDER BY `time` DESC LIMIT 300";
   $res = getRecord($sql);
 ?>
-        <div class="title">着信履歴（最新300件）</div>
-        <table id="historyList" >
+        <div class="headinfo">
+          <div class="title">着信履歴（最新300件）<div class="btn customerEdit" id="customerAddBtn" >会員新規作成</div></div>
+          <div class="loginName"><?php echo $_SESSION['shop_name'] ?>様</div>
+        </div>
+        <table id="latestList" class="w100" >
           <thead>
             <tr>
               <th style="width:50px !important;">No</th>

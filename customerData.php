@@ -58,17 +58,21 @@ if($_REQUEST['cid'] == ''){
 	$customerData['tel1'] = $_REQUEST['num'];
 }
 //直近のコール
-if($_GET['mode']=='call'){
+if($_GET['isCall'] == 1){
 	$mode = 1;
 } else {
 	$mode = 0;
 }
 if(is_numeric($_GET['num'])){
-	$sql = "SELECT * FROM `call_history` WHERE `num` = '{$_GET['num']}' ORDER BY `time` DESC LIMIT {$mode},1";
+	if($customerData){
+		$sql = "SELECT * FROM `call_history` WHERE `num` IN ('{$customerData['tel1']}','{$customerData['tel2']}','{$customerData['tel3']}') ORDER BY `time` DESC LIMIT {$mode},1";
+	} else {
+		$sql = "SELECT * FROM `call_history` WHERE `num` = '{$_GET['num']}' ORDER BY `time` DESC LIMIT {$mode},1";
+	}
 	$recentCallData = get1Record($sql);
-	if($_GET['mode']=='call' && $recentCallData['time']==''){
+	if($_GET['isCall'] == 1 && $recentCallData['time']==''){
 		$recentCallData['time'] = '<div class="recentCallData">初回着信</div>';
-	} elseif($_GET['mode']=='call') {
+	} elseif($_GET['isCall'] == 1) {
 		$recentCallData['time'] = '<div class="recentCallData">直近着信：'.$recentCallData['time'].'</div>';
 	} elseif($recentCallData['time']) {
 		$recentCallData['time'] = '<div class="recentCallData">前回着信：'.$recentCallData['time'].'</div>';
@@ -80,11 +84,11 @@ if(is_numeric($_GET['num'])){
 <head>
 	<meta charset="UTF-8">
 	<link rel="icon" href="favicon.ico" size="16x16" type="image/png">
-	<link rel="stylesheet" href="css/style.css" media="all">
+	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-	<title>ドM会員管理システム</title>
+	<title><?php echo $customerData['name'] ?></title>
 </head>
-<body <?php if($_GET['mode']!='call'){ ?>onUnload="window.opener.parentReload('<?php echo $_GET['mode'] ?>')"<?php } ?> id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
+<body onBlur="focus()" onUnload="window.opener.modalClose('<?php echo $_REQUEST['num'] ?>')" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
 <div id="loader"></div>
   <div id="modal">
     <!-- <div id="modalClose" onClick="close()" ><i class="fas fa-times"></i></div> -->
@@ -109,13 +113,13 @@ if(is_numeric($_GET['num'])){
 						<tr>
 							<th>登録日時</th><td><?php echo $customerData['created'] ?></td><th>ステータス：</th>
 							<td>
-								<select name="rating" id="rating" >
-									<option value="一般" <?php if($customerData['rating']=='一般'){ echo 'selected';} ?> >一般</option>
-									<option value="注意" <?php if($customerData['rating']=='注意'){ echo 'selected';} ?> >注意</option>
-									<option value="出禁" <?php if($customerData['rating']=='出禁'){ echo 'selected';} ?> >出禁</option>
-									<option value="スタッフ" <?php if($customerData['rating']=='スタッフ'){ echo 'selected';} ?> >スタッフ</option>
-									<option value="業者" <?php if($customerData['rating']=='業者'){ echo 'selected';} ?> >業者</option>
-									<option value="その他" <?php if($customerData['rating']=='その他'){ echo 'selected';} ?> >その他</option>
+								<select name="rating" id="rating" style="background:<?php if($customerData['rating']=='注意'){ echo '#ffc294';} elseif($customerData['rating']=='出禁'){ echo '#ffb5b5';} ?> !important" >
+									<option style="background: #fff !important" value="一般" <?php if($customerData['rating']=='一般'){ echo 'selected';} ?> >一般</option>
+									<option style="background: #fff !important" value="注意" <?php if($customerData['rating']=='注意'){ echo 'selected';} ?> >注意</option>
+									<option style="background: #fff !important" value="出禁" <?php if($customerData['rating']=='出禁'){ echo 'selected';} ?> >出禁</option>
+									<option style="background: #fff !important" value="スタッフ" <?php if($customerData['rating']=='スタッフ'){ echo 'selected';} ?> >スタッフ</option>
+									<option style="background: #fff !important" value="業者" <?php if($customerData['rating']=='業者'){ echo 'selected';} ?> >業者</option>
+									<option style="background: #fff !important" value="その他" <?php if($customerData['rating']=='その他'){ echo 'selected';} ?> >その他</option>
 								</select>
 							</td>
 							<th>誕生日</th>
@@ -258,7 +262,7 @@ foreach((array)$usageDataAry AS $usageData){
 <script src="https://cdn.rawgit.com/jonthornton/jquery-timepicker/3e0b283a/jquery.timepicker.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script type="text/javascript" src="/js/commonModal.js"></script>
+<script type="text/javascript" src="/js/commonModal.js?<?php echo BUSTING_DATE ?>"></script>
 <script>
 $(document).on("click", ".saveBtn", function () {
 	let err;
@@ -270,7 +274,6 @@ $(document).on("click", ".saveBtn", function () {
 		)
 		err = true;
 	}
-	console.log($('#tel1').val().length);
 	if($('#tel1').val() && ($('#tel1').val().length > 11 || $('#tel1').val().length < 10)){
 		Swal.fire(
 			'電話番号エラー',
