@@ -31,7 +31,7 @@ function usageModalLaunch(cid,uid) {
   window.open(
     "usageData.php?cid=" + cid + "&uid=" + uid,
     "window_cid_usage_" + cid + uid,
-    "width=870,height=300,scrollbars=yes"
+    "width=870,height=500,scrollbars=yes"
   );
 }
 $(".timePicker").timepicker();

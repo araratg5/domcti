@@ -88,7 +88,7 @@ if(is_numeric($_GET['num'])){
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<title><?php echo $customerData['name'] ?></title>
 </head>
-<body onBlur="focus()" onUnload="window.opener.modalClose('<?php echo $_REQUEST['num'] ?>')" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
+<body onBlur="focus()" onUnload="modalClose('<?php echo $_REQUEST['num'] ?>')" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
 <div id="loader"></div>
   <div id="modal">
     <!-- <div id="modalClose" onClick="close()" ><i class="fas fa-times"></i></div> -->
@@ -330,4 +330,16 @@ $(document).on("click", ".saveBtn", function () {
 		$('form').submit();
 	}
 });
+function modalClose(num){
+  showingNumberListjson = localStorage.getItem('showing_number_list');
+  if(showingNumberListjson){
+    showingNumberListArray = JSON.parse(showingNumberListjson);
+  }
+  showingNumberListArray = showingNumberListArray.filter(function(v){
+    return ! num.includes(v);
+  });
+  showingNumberListJson = JSON.stringify(showingNumberListArray, undefined, 1);
+	localStorage.setItem('showing_number_list', showingNumberListJson);
+	window.opener.modalClose();
+}
 </script>

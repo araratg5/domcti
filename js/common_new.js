@@ -55,7 +55,7 @@ function usageModalLaunch(cid,uid) {
 }
 $(".timePicker").timepicker();
 $("#startDate,#endDate,.startDate").datepicker({ dateFormat: "yy年mm月dd日" });
-function modalClose(num) {
+function modalClose() {
   let mode = $('#mode').val()
   $('.loading').show();
   switch(mode){
@@ -112,11 +112,6 @@ function modalClose(num) {
       });
       break;
   }
-  showingNumberListArray = showingNumberListArray.filter(function(v){
-    return ! num.includes(v);
-  });
-  showingNumberListJson = JSON.stringify(showingNumberListArray, undefined, 1);
-	localStorage.setItem('showing_number_list', showingNumberListJson);
 }
 $(document).on("change", ".colEdit", function () {
   $this = $(this);

@@ -56,6 +56,12 @@ $girlDataAry = getRecord($sql,1);
 	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<title>ドM会員管理システム</title>
+	<style>
+	.select2-results , .select2-results__options {
+	    max-height: 300px !important;
+	    height: 300px !important;
+	}
+	</style>
 </head>
 <body onUnload="window.opener.modalClose()" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
 	<div id="slipListWrapper">
@@ -74,7 +80,7 @@ $usageData['option'] = json_decode($usageData['p_option']);
 				</ul>
 				<ul>
 					<li>
-						利用キャスト：　<select name="girl" class="girlSelector" id="">
+						利用キャスト：　<select name="girl" class="girlSelector" id="select2" style="min-width:200px">
 							<option value="フリー" <?php if($usageData['girl'] == 'フリー'){echo 'selected';} ?> >フリー</option>
 	<?php
 	foreach((array)$girlDataAry AS $girlData){
@@ -122,4 +128,9 @@ $usageData['option'] = json_decode($usageData['p_option']);
 <script src="https://cdn.rawgit.com/jonthornton/jquery-timepicker/3e0b283a/jquery.timepicker.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$('#select2').select2({
+    width: 'resolve'
+})
+</script>
 <script type="text/javascript" src="/js/commonModal.js?<?php echo BUSTING_DATE ?>"></script>

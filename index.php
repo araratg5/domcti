@@ -58,7 +58,9 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
 	</div>
 </body>
 </html>
-
+<script>
+localStorage.removeItem("showing_number_list");
+</script>
 
 
 
