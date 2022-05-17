@@ -111,6 +111,7 @@ function modalClose() {
       .fail(function (jqXHR, textStatus, errorThrown) {
       });
       break;
+      
   }
 }
 $(document).on("change", ".colEdit", function () {

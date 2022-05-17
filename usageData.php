@@ -63,7 +63,7 @@ $girlDataAry = getRecord($sql,1);
 	}
 	</style>
 </head>
-<body onUnload="window.opener.modalClose()" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
+<body onUnload="modalClose()" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
 	<div id="slipListWrapper">
 <?php
 $usageData['option'] = json_decode($usageData['p_option']);
@@ -134,3 +134,8 @@ $('#select2').select2({
 })
 </script>
 <script type="text/javascript" src="/js/commonModal.js?<?php echo BUSTING_DATE ?>"></script>
+<script>
+	function modalClose(){
+		window.opener.modalClose();
+	}
+</script>

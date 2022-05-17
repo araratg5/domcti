@@ -2,3 +2,7 @@ AddHandler cgi-script htaccess
 AddType application/x-httpd-php .htm .html
 
 php_flag opcache.enable Off
+
+php_value session.gc_maxlifetime 0
+php_value session.gc_probability 1
+php_value session.gc_divisor 1000

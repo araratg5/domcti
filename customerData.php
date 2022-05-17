@@ -207,50 +207,50 @@ $honshimeiExist[$girlUsageList['girl']] = dbCount($sql);
 	</ul>
 </div>
 <?php } ?>
-<div id="">
-				<div class="title" >利用履歴一覧</div>
-				<span class="btn dataDelete" data-id="usageList" data-mode="usage" >チェックした履歴を削除</span>
-				<table id="usageList" >
-          <thead>
-            <tr>
-							<th><input type="checkbox" class="checkAll" data-id="usageList" ></th>
-              <th>利用日時</th>
-							<th>利用店舗</th>
-              <th>キャスト名</th>
-              <th>指名種別</th>
-              <th>分</th>
-              <th>金額</th>
-              <th>備考</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
+		<div id="modalUsageListWrapper">
+			<div class="title" >利用履歴一覧</div>
+			<span class="btn dataDelete" data-id="usageList" data-mode="usage" >チェックした履歴を削除</span>
+			<table id="usageList" >
+				<thead>
+					<tr>
+						<th><input type="checkbox" class="checkAll" data-id="usageList" ></th>
+						<th>利用日時</th>
+						<th>利用店舗</th>
+						<th>キャスト名</th>
+						<th>指名種別</th>
+						<th>分</th>
+						<th>金額</th>
+						<th>備考</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
 <?php
 foreach((array)$usageDataAry AS $usageData){
 ?>
-            <tr>
-							<td><?php if($usageData['shop_id'] == $_SESSION['id']){ ?><input type="checkbox" value="<?php echo $usageData['id'] ?>" ><?php } ?></td>
-              <td><?php echo date("Y-m-d H:i",strtotime($usageData['p_date'])) ?></td>
-							<td><?php echo $usageData['usage_shopname'] ?></td>
-              <td><?php echo $usageData['girl'] ?></td>
-              <td><?php echo $usageData['nominate'] ?></td>
-              <td><?php echo $usageData['p_time'] ?></td>
-              <td><?php echo number_format($usageData['price']) ?></td>
-              <td><?php echo $usageData['remark'] ?></td>
-              <td>
-								<?php if($usageData['shop_id'] == $_SESSION['id']){ ?>
-                <div class="btn edit usageEdit" data-cid="<?php echo $usageData['customer_id'] ?>" data-uid="<?php echo $usageData['id'] ?>" >編集</div>
-								<?php } else { ?>
-								<div class="btn disabled" >編集・削除不可</div>
-								<?php } ?>
-              </td>
-            </tr>
+					<tr>
+						<td><?php if($usageData['shop_id'] == $_SESSION['id']){ ?><input type="checkbox" value="<?php echo $usageData['id'] ?>" ><?php } ?></td>
+						<td><?php echo date("Y-m-d H:i",strtotime($usageData['p_date'])) ?></td>
+						<td><?php echo $usageData['usage_shopname'] ?></td>
+						<td><?php echo $usageData['girl'] ?></td>
+						<td><?php echo $usageData['nominate'] ?></td>
+						<td><?php echo $usageData['p_time'] ?></td>
+						<td><?php echo number_format($usageData['price']) ?></td>
+						<td><?php echo $usageData['remark'] ?></td>
+						<td>
+							<?php if($usageData['shop_id'] == $_SESSION['id']){ ?>
+							<div class="btn edit usageEdit" data-cid="<?php echo $usageData['customer_id'] ?>" data-uid="<?php echo $usageData['id'] ?>" >編集</div>
+							<?php } else { ?>
+							<div class="btn disabled" >編集・削除不可</div>
+							<?php } ?>
+						</td>
+					</tr>
 <?php } ?>
-          </tbody>
-        </table>
-			</div>
-				<div class="clear"></div>
-			</div>
+				</tbody>
+			</table>
+		</div>
+			<div class="clear"></div>
+		</div>
   </div>
 </body>
 </html>
@@ -326,11 +326,26 @@ $(document).on("click", ".saveBtn", function () {
 	if(err){
 		return false;
 	} else {
-		$('#loader').show();
+		$('.modalLoading').show();
 		$('form').submit();
 	}
 });
 function modalClose(num){
+	$('.modalLoading').show();
+	var userData ={cid: $('#cid').val()};
+	$.ajax({
+		url: "ajax/modalUsageUpdate.php",
+		data: userData,
+		type: "POST",
+		cache: false,
+	})
+	.done(function (data) {
+		$('#modalUsageListWrapper').html(data);
+		$('.modalLoading').hide();
+	})
+	.fail(function (jqXHR, textStatus, errorThrown) {
+	});
+	window.opener.modalClose();
   showingNumberListjson = localStorage.getItem('showing_number_list');
   if(showingNumberListjson){
     showingNumberListArray = JSON.parse(showingNumberListjson);
@@ -340,6 +355,6 @@ function modalClose(num){
   });
   showingNumberListJson = JSON.stringify(showingNumberListArray, undefined, 1);
 	localStorage.setItem('showing_number_list', showingNumberListJson);
-	window.opener.modalClose();
 }
 </script>
+<div class="modalLoading"><div class="fl fl-spinner spinner"><div class="cube1"></div><div class="cube2"></div></div></div>

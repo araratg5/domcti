@@ -23,7 +23,7 @@ define("SITE_DB_DBNAME_CTI",	'dom_cti');
 define("SITE_DB_USER_CTI",		'araratcti');
 define("SITE_DB_PASS_CTI",		'arrtcti2022');
 
-define("BUSTING_DATE",		'20220512');
+define("BUSTING_DATE",		'20220518');
 
 define("SALT",			'EVW53pu3Gm');
 
