@@ -18,12 +18,12 @@ define("SITE_DB_DBNAME_DOM",	'search_dom');
 define("SITE_DB_USER_DOM",		'doemu_mst');
 define("SITE_DB_PASS_DOM",		'doemu81!');
 
-define("SITE_DB_HOST_CTI",		'araratcti.cmj29l3jswws.ap-northeast-1.rds.amazonaws.com');
+define("SITE_DB_HOST_CTI",		'ararat-cti.cmj29l3jswws.ap-northeast-1.rds.amazonaws.com');
 define("SITE_DB_DBNAME_CTI",	'dom_cti');
 define("SITE_DB_USER_CTI",		'araratcti');
 define("SITE_DB_PASS_CTI",		'arrtcti2022');
 
-define("BUSTING_DATE",		'20220518');
+define("BUSTING_DATE",		'20220520');
 
 define("SALT",			'EVW53pu3Gm');
 
@@ -36,11 +36,23 @@ define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
 //mysqli_report(MYSQLI_REPORT_STRICT);
 
 if($_SERVER['SCRIPT_NAME']!='/index.php' && $_SERVER['SCRIPT_NAME']!='/api/responseSender.php'){
-  $sql ="SELECT * FROM `shops` WHERE `shop_id` = '{$_SESSION['id']}' AND `shop_pw` = '{$_SESSION['pass']}' ";
+  $id = strDecrypt($_COOKIE['id']);
+  $pass = strDecrypt($_COOKIE['pass']);
+  $sql ="SELECT * FROM `shops` WHERE `shop_id` = '{$id}' AND `shop_pw` = '{$pass}' ";
 	$num = DBCount($sql,1);
 	if ($num <= 0) {
     header("Location:". "/");
     exit;
+  } else {
+    $_SESSION['id'] = $id;
+    $_SESSION['pass'] = $pass;
+		$_SESSION["mode"] = $_COOKIE["mode"];
+		$_SESSION["signal_mode"] = $_COOKIE["signal_mode"];
+		$_SESSION["shop_name"] = $_COOKIE["shop_name"];
+		$_SESSION['start_date'] = $_COOKIE['start_date'];
+		$_SESSION['start_time'] = $_COOKIE['start_time'];
+		$_SESSION['end_date'] = $_COOKIE['end_date'];
+		$_SESSION['end_time'] = $_COOKIE['end_time'];
   }
 }
 

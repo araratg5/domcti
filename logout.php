@@ -2,6 +2,6 @@
 //sessionstart
 session_start();
 //login system
-unset($_SESSION['id']);
-unset($_SESSION['pass']);
+setcookie("id", "", time() - 30);
+setcookie("pass", "", time() - 30);
 header("Location:". "/");

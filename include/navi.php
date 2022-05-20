@@ -15,5 +15,7 @@ $currentAry[str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME'])
         <li class="<?php echo $currentAry['staffMaster'] ?>" ><a href="/config.html" ><i class="fas fa-cog"></i>基本設定</a></li>
       </ul>
 -->
+      <a href="/logout.php" title="ログアウト" id="logoutBtn"><img src="/img/logout.png"><span>ログアウト</span></a>
     </aside>
+
 

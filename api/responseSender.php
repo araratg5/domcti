@@ -1,5 +1,4 @@
 <?php
-echo $_SERVER['SCRIPT_NAME'];
 include_once($_SERVER['DOCUMENT_ROOT'].'/lib/func.php');
 $now = date("Y-m-d H:i:s");
 $sql = "INSERT INTO `call_history` (`shop_id`,`sendcode`,`time`,`num`) VALUES ('{$_POST['shop_id']}','','{$now}','{$_POST['tel']}')";

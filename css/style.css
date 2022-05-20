@@ -53,6 +53,32 @@ aside {
   background: #fafafa;
   position: fixed;
 }
+aside #logoutBtn {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 60px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #666;
+    padding: 5px 0 0;
+    text-align: center;
+    display: block;
+    transition: all 0.5s;
+}
+aside #logoutBtn img {
+    width: 30px;
+    margin: 0 auto;
+}
+aside #logoutBtn:hover {
+  background: #d1ffc6;
+  text-decoration: none;
+  color: #111;
+}
+aside #logoutBtn span {
+    font-size: 10px;
+    font-weight: bold;
+}
 main .title {
     font-size: 18px;
     border-left: solid 5px #cccccc;
