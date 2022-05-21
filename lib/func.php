@@ -23,6 +23,7 @@ define("SITE_DB_DBNAME_CTI",	'dom_cti');
 define("SITE_DB_USER_CTI",		'araratcti');
 define("SITE_DB_PASS_CTI",		'arrtcti2022');
 
+define("VER",		'0.7');
 define("BUSTING_DATE",		'20220520');
 
 define("SALT",			'EVW53pu3Gm');
@@ -76,115 +77,151 @@ for($i = 1 ; $i < 5 ; $i++ ){
 }
 
 function dbQuery($sql,$mode = 0){
-try{
-  $mysqli = dbOpen($mode);
-  return $mysqli->query($sql);
-}catch(Exception $e){
-  echo 'exception->'.$e->getMessage();
-}
+  try{
+    $mysqli = dbOpen($mode);
+    return $mysqli->query($sql);
+  }catch(Exception $e){
+    echo 'exception->'.$e->getMessage();
+  }finally{
+		if($mysqli != null){
+			$mysqli->close();
+		}
+	}
 }
 
 function updateData($sql,$mode = 0){
-try{
-  $mysqli = dbOpen($mode);
-  $mysqli->query($sql);
-  return $mysqli->affected_rows;
-}catch(Exception $e){
-  echo 'exception->'.$e->getMessage();
-}
+  try{
+    $mysqli = dbOpen($mode);
+    $mysqli->query($sql);
+    return $mysqli->affected_rows;
+  }catch(Exception $e){
+    echo 'exception->'.$e->getMessage();
+  }finally{
+		if($mysqli != null){
+			$mysqli->close();
+		}
+	}
 }
 
 function deleteData($sql,$mode = 0){
-try{
-  $mysqli = dbOpen($mode);
-  $mysqli->query($sql);
-  return $mysqli->affected_rows;
-}catch(Exception $e){
-  echo 'exception->'.$e->getMessage();
-}
+  try{
+    $mysqli = dbOpen($mode);
+    $mysqli->query($sql);
+    return $mysqli->affected_rows;
+  }catch(Exception $e){
+    echo 'exception->'.$e->getMessage();
+  }finally{
+		if($mysqli != null){
+			$mysqli->close();
+		}
+	}
 }
 
 function insData($sql,$mode = 0){
-try{
-  $mysqli = dbOpen($mode);
-  $result = $mysqli->query($sql);
-  return $mysqli->insert_id;
-}catch(Exception $e){
-  echo 'exception->'.$e->getMessage();
-}
+  try{
+    $mysqli = dbOpen($mode);
+    $result = $mysqli->query($sql);
+    return $mysqli->insert_id;
+  }catch(Exception $e){
+    echo 'exception->'.$e->getMessage();
+  }finally{
+		if($mysqli != null){
+			$mysqli->close();
+		}
+	}
 }
 
 //SQLからレコード取得(array)
 function getRecord($sql,$mode = 0){
-try{
-  $mysqli = dbOpen($mode);
+  try{
+    $mysqli = dbOpen($mode);
 
-  if ($result = $mysqli->query($sql)) {
-    // 連想配列を取得
-    while ($row = $result->fetch_assoc()) {
-      $res[] = $row;
+    if ($result = $mysqli->query($sql)) {
+      // 連想配列を取得
+      while ($row = $result->fetch_assoc()) {
+        $res[] = $row;
+      }
+      return $res;
     }
-    return $res;
-  }
-}catch(Exception $e){
-  echo 'exception->'.$e->getMessage();
-}
+  }catch(Exception $e){
+    echo 'exception->'.$e->getMessage();
+  }finally{
+		if($mysqli != null){
+			$mysqli->close();
+		}
+	}
 }
 
 function getRecordWithAllCount($sql,$mode = 0){
-try{
-  $mysqli = dbOpen($mode);
+  try{
+    $mysqli = dbOpen($mode);
 
-  if ($result = $mysqli->query($sql)) {
-    // 連想配列を取得
-    while ($row = $result->fetch_assoc()) {
-      $res[] = $row;
+    if ($result = $mysqli->query($sql)) {
+      // 連想配列を取得
+      while ($row = $result->fetch_assoc()) {
+        $res[] = $row;
+      }
+      $num_query = $mysqli->query('SELECT FOUND_ROWS()');
+      $result = [$res,$num_query->fetch_row()];    
+      return $result;
     }
-    $num_query = $mysqli->query('SELECT FOUND_ROWS()');
-    $result = [$res,$num_query->fetch_row()];    
-    return $result;
-  }
-}catch(Exception $e){
-  echo 'exception->'.$e->getMessage();
-}
+  }catch(Exception $e){
+    echo 'exception->'.$e->getMessage();
+  }finally{
+		if($mysqli != null){
+			$mysqli->close();
+		}
+	}
 }
 
 //SQLから一件レコード取得(array)
 function get1Record($sql,$mode = 0){
-try{
-  $mysqli = dbOpen($mode);
+  try{
+    $mysqli = dbOpen($mode);
 
-  if ($result = $mysqli->query($sql)) {
-    return $result->fetch_assoc();
-  }
-}catch(Exception $e){
-  echo 'exception->'.$e->getMessage();
-}
+    if ($result = $mysqli->query($sql)) {
+      return $result->fetch_assoc();
+    }
+  }catch(Exception $e){
+    echo 'exception->'.$e->getMessage();
+  }finally{
+		if($mysqli != null){
+			$mysqli->close();
+		}
+	}
 }
 
 //クエリ条件でレコード数を返す関数
 function dbCount($sql,$mode = 0){
-try{
-  $mysqli = dbOpen($mode);
+  try{
+    $mysqli = dbOpen($mode);
 
-  if ($result = $mysqli->query($sql)) {
-    return $result->num_rows;
-  }else{
-    return -1;
-  }
-}catch(Exception $e){
-  echo 'exception->'.$e->getMessage();
-}
+    if ($result = $mysqli->query($sql)) {
+      return $result->num_rows;
+    }else{
+      return -1;
+    }
+  }catch(Exception $e){
+    echo 'exception->'.$e->getMessage();
+  }finally{
+		if($mysqli != null){
+			$mysqli->close();
+		}
+	}
 }
 
 function queryEscape($sql,$mode = 0){
-try{
-  $mysqli = dbOpen($mode);
-  $res = $mysqli->real_escape_string($sql);
-  return str_replace('`', '', $res);
-}catch(Exception $e){
-  echo 'exception->'.$e->getMessage();
-}
+  try{
+    $mysqli = dbOpen($mode);
+    $res = $mysqli->real_escape_string($sql);
+    return str_replace('`', '', $res);
+  }catch(Exception $e){
+    echo 'exception->'.$e->getMessage();
+  }finally{
+		if($mysqli != null){
+			$mysqli->close();
+		}
+	}
 }
 
 
@@ -786,10 +823,14 @@ function getpager($allNum, $itemperCount, $currentPage = 1){
 	return $res;
 }
 
-$sql ="SELECT * FROM `shops` WHERE `is_disabled` = 0";
+$sql ="SELECT `shop_id`,`cti_color` FROM `shops`";
 $result = getRecord($sql,1);
 foreach($result AS $shopNameData){
   $shopNameAry[$shopNameData['shop_id']] = $shopNameData['name_ja'];
+  if(!$shopNameData['cti_color']){
+    $shopNameData['cti_color'] = '#ffffff';
+  }
+  $shopBgColorAry[$shopNameData['shop_id']] = $shopNameData['cti_color'];
 }
   $shopNameAry['testshop'] = 'テスト店舗';
 
