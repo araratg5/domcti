@@ -44,15 +44,17 @@ waitElem.fire = {
           if(dataObj?.address!=null){
             address = dataObj?.address;
           }
-          $('#historyList tbody').prepend(`<tr data-customer-id="${dataObj?.id}" data-customer-num="${json.tel}" ${dataObj?.rating}>
+          $('#latestList tbody,#historyList tbody').prepend(`<tr data-customer-id="${dataObj?.id}" data-customer-num="${json.tel}" ${dataObj?.rating}>
+  <td><input type="checkbox" value="${dataObj?.id}" ></td>
   <td style="width:50px !important;">1</td>
   <td style="width:165px !important; text-align:center;">${json.time}</td>
   <td style="width:90px !important; text-align:center;">${cid}</td>
   <td style="width:300px !important; text-align:left;">${name}</td>
-  <td style="width:130px !important; text-align:center;">${json.tel}</td>
+  <td style="width:130px !important; text-align:center;">${dataObj?.separated_num}</td>
   <td>${address}</td>
 </tr>`);  
-          $('#historyList tbody tr td:nth-child(1)').each(function(i, elem) {
+          $('#latestList tbody tr:last-child,#historyList tbody tr:last-child').remove();
+          $('#latestList tbody tr td:nth-child(2),#historyList tbody tr td:nth-child(2)').each(function(i, elem) {
             $(elem).text(i + 1);
           })
         })
