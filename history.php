@@ -6,8 +6,10 @@
       $_SESSION['start_time'] = $_REQUEST['start_time'];
       $_SESSION['end_date'] = $_REQUEST['end_date'];
       $_SESSION['end_time'] = $_REQUEST['end_time'];
+      $_SESSION['all_period'] = $_REQUEST['all_period'];
       $_SESSION['customer_id'] = $_REQUEST['customer_id'];
       $_SESSION['customer_name'] = $_REQUEST['customer_name'];
+      $_SESSION['rating'] = $_REQUEST['rating'];
       $_SESSION['tel'] = $_REQUEST['tel'];
       $_SESSION['address'] = $_REQUEST['address'];
       $_SESSION['free_word'] = $_REQUEST['free_word'];
@@ -17,8 +19,10 @@
       $_SESSION['start_time'] = date("00:00",strtotime("-7 day"));
       $_SESSION['end_date'] = date("Y年m月d日");
       $_SESSION['end_time'] = date("23:59");
+      $_SESSION['all_period'] = '';
       $_SESSION['customer_id'] = '';
       $_SESSION['customer_name'] = '';
+      $_SESSION['rating'] = '';
       $_SESSION['tel'] = '';
       $_SESSION['address'] = '';
       $_SESSION['free_word'] = '';
@@ -28,54 +32,40 @@
 
   $_SESSION['start_datetime'] = str_replace(['年','月','日'],['-','-',''],$_SESSION['start_date']).' '.$_SESSION['start_time'].':00';
   $_SESSION['end_datetime'] = str_replace(['年','月','日'],['-','-',''],$_SESSION['end_date']).' '.$_SESSION['end_time'].':00';
-  $searchConditionAry[] = "`ch`.`time` BETWEEN '{$_SESSION['start_datetime']}' AND '{$_SESSION['end_datetime']}'";
+
+  $callHistorySearchConditionAry[] = "`shop_id` = '{$_SESSION['id']}'";
+  if(!$_SESSION['all_period']){
+    $callHistorySearchConditionAry[] = "`ch`.`time` BETWEEN '{$_SESSION['start_datetime']}' AND '{$_SESSION['end_datetime']}'";
+  }
   if($_SESSION['customer_id']){
     $searchConditionAry[] = "`cd`.`customer_id` = '{$_SESSION['customer_id']}'";
   }
   if($_SESSION['customer_name']){
     $searchConditionAry[] = "`cd`.`name` LIKE '%{$_SESSION['customer_name']}%'";
   }
+  if($_SESSION['rating']){
+    $searchConditionAry[] = "`cd`.`rating` = '{$_SESSION['rating']}'";
+  }
   if($_SESSION['tel']){
-    $searchConditionAry[] = "`ch`.`num` LIKE '%{$_SESSION['tel']}%'";
+    $callHistorySearchConditionAry[] = "`ch`.`num` LIKE '%{$_SESSION['tel']}%'";
   }
   if($_SESSION['address']){
     $searchConditionAry[] = "`cd`.`address` LIKE '%{$_SESSION['address']}%'";
   }
-  $searchCondition = ' AND '.implode(' AND ',$searchConditionAry);
-
-  $sql = "SELECT `ch`.`id` FROM (SELECT `id`,`num`,`time` FROM `call_history` WHERE `shop_id` = '{$_SESSION['id']}') AS `ch` INNER JOIN (SELECT `id`,`customer_id`,`name`,`remark`,`rating`,`address`,`tel1` FROM `customer_data`) AS `cd` ON `ch`.`num` = `cd`.`tel1` WHERE 1 {$searchCondition} ORDER BY `time` DESC";
-  $allCount += dbCount($sql);
-  $sql = "SELECT `ch`.`id` FROM (SELECT `id`,`num`,`time` FROM `call_history` WHERE `shop_id` = '{$_SESSION['id']}') AS `ch` INNER JOIN (SELECT `id`,`customer_id`,`name`,`remark`,`rating`,`address`,`tel2` FROM `customer_data`) AS `cd` ON `ch`.`num` = `cd`.`tel2` WHERE 1 {$searchCondition} ORDER BY `time` DESC";
-  $allCount += dbCount($sql);
-  $sql = "SELECT `ch`.`id` FROM (SELECT `id`,`num`,`time` FROM `call_history` WHERE `shop_id` = '{$_SESSION['id']}') AS `ch` INNER JOIN (SELECT `id`,`customer_id`,`name`,`remark`,`rating`,`address`,`tel3` FROM `customer_data`) AS `cd` ON `ch`.`num` = `cd`.`tel3` WHERE 1 {$searchCondition} ORDER BY `time` DESC";
-  $allCount += dbCount($sql);
-
-  if($allCount){  
-    $perCount = 300;
-    $pagerData = getPager($allCount,$perCount,$_GET['p']);
-    $start = ($pagerData['current_page'] - 1) * $perCount;
-
-    $sql = "SELECT `ch`.`id` AS `hid`,`ch`.`num`,`ch`.`time`,`cd`.`id` AS `cid`,`cd`.`customer_id`,`cd`.`name`,`cd`.`remark`,`cd`.`rating`,`cd`.`address` FROM (SELECT `id`,`num`,`time` FROM `call_history` WHERE `shop_id` = '{$_SESSION['id']}') AS `ch` INNER JOIN (SELECT `id`,`customer_id`,`name`,`remark`,`rating`,`address`,`tel1` FROM `customer_data`) AS `cd` ON `ch`.`num` = `cd`.`tel1` WHERE 1 {$searchCondition} ORDER BY `time` DESC LIMIT {$start},{$perCount}";
-    $res1 = getRecord($sql);
-    $sql = "SELECT `ch`.`id` AS `hid`,`ch`.`num`,`ch`.`time`,`cd`.`id` AS `cid`,`cd`.`customer_id`,`cd`.`name`,`cd`.`remark`,`cd`.`rating`,`cd`.`address` FROM (SELECT `id`,`num`,`time` FROM `call_history` WHERE `shop_id` = '{$_SESSION['id']}') AS `ch` INNER JOIN (SELECT `id`,`customer_id`,`name`,`remark`,`rating`,`address`,`tel2` FROM `customer_data`) AS `cd` ON `ch`.`num` = `cd`.`tel2` WHERE 1 {$searchCondition} ORDER BY `time` DESC LIMIT {$start},{$perCount}";
-    $res2 = getRecord($sql);
-    $sql = "SELECT `ch`.`id` AS `hid`,`ch`.`num`,`ch`.`time`,`cd`.`id` AS `cid`,`cd`.`customer_id`,`cd`.`name`,`cd`.`remark`,`cd`.`rating`,`cd`.`address` FROM (SELECT `id`,`num`,`time` FROM `call_history` WHERE `shop_id` = '{$_SESSION['id']}') AS `ch` INNER JOIN (SELECT `id`,`customer_id`,`name`,`remark`,`rating`,`address`,`tel3` FROM `customer_data`) AS `cd` ON `ch`.`num` = `cd`.`tel3` WHERE 1 {$searchCondition} ORDER BY `time` DESC LIMIT {$start},{$perCount}";
-    $res3 = getRecord($sql);
-    $resRaw = array_merge((array)$res1,(array)$res2,(array)$res3);
-
-    $res = sortByKey('hid', SORT_DESC, $resRaw);
+  if(is_array($searchConditionAry)){
+    $searchCondition = ' AND '.implode(' AND ',$searchConditionAry);
   }
+  $callHistorySearchCondition = implode(' AND ',$callHistorySearchConditionAry);
+  
+  $sql = "SELECT `id` FROM `call_history` AS `ch` WHERE `is_delete` = 0 AND  {$callHistorySearchCondition} ORDER BY `time` DESC";
+  $allCount = dbCount($sql);
 
-// 指定したキーに対応する値を基準に、配列をソートする
-function sortByKey($key_name, $sort_order, $array) {
-    foreach ($array as $key => $value) {
-        $standard_key_array[$key] = $value[$key_name];
-    }
+  $perCount = 300;
+  $pagerData = getPager($allCount,$perCount,$_GET['p']);
+  $start = ($pagerData['current_page'] - 1) * $perCount;
 
-    @array_multisort($standard_key_array, $sort_order, $array);
-
-    return $array;
-}
+  $sql = "SELECT * FROM `call_history` AS `ch` WHERE `is_delete` = 0 AND  {$callHistorySearchCondition} ORDER BY `time` DESC LIMIT {$start},{$perCount}";
+  $usageDataAry = getRecord($sql);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -87,6 +77,11 @@ function sortByKey($key_name, $sort_order, $array) {
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<title>ドM会員管理システム</title>
 </head>
+<style>
+	#wrapper {
+		background: <?php echo $shopBgColorAry[$_SESSION['id']] ?>
+	}
+</style>
 <body id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
   <input type="hidden" id="shopid" value="<?php echo $_SESSION['id'] ?>" >
   <input type="hidden" id="mode" value="history" >
@@ -103,15 +98,28 @@ function sortByKey($key_name, $sort_order, $array) {
             <ul>
               <li>期間：　</li>
               <li>
-                <input type="text" name="start_date" id="startDate" value="<?php echo $_SESSION['start_date'] ?>" >
-                <input type="text" name="start_time" class="timePicker" data-time-format="H:i" id="startTime" value="<?php echo $_SESSION['start_time'] ?>" >～
-                <input type="text" name="end_date" id="endDate" value="<?php echo $_SESSION['end_date'] ?>" >
-                <input type="text" name="end_time" class="timePicker" data-time-format="H:i" id="endTime" value="<?php echo $_SESSION['end_time'] ?>" >(デフォルト直近一週間/最大表示件数1000件)
+                全て：<input type="checkbox" name="all_period" value="1" <?php if($_SESSION['all_period']){ echo 'checked';} ?> >
+                <input type="text" name="start_date" id="startDate" value="<?php echo $_SESSION['start_date'] ?>" <?php if($_SESSION['all_period']){ echo 'readonly';} ?> >
+                <input type="text" name="start_time" <?php if($_SESSION['all_period']){ echo 'readonly';} ?> class="timePicker" data-time-format="H:i" id="startTime" value="<?php echo $_SESSION['start_time'] ?>" >～
+                <input type="text" name="end_date" id="endDate" value="<?php echo $_SESSION['end_date'] ?>" <?php if($_SESSION['all_period']){ echo 'readonly';} ?> >
+                <input type="text" name="end_time" class="timePicker" data-time-format="H:i" id="endTime" value="<?php echo $_SESSION['end_time'] ?>" <?php if($_SESSION['all_period']){ echo 'readonly';} ?> >(デフォルト直近一週間)
               </li>
             </ul>
             <ul>
               <li>会員ID：　<input type="text" value="<?php echo $_SESSION['customer_id'] ?>" name="customer_id" id="customerId" class="mr10" ></li>
               <li>会員名：　<input type="text" value="<?php echo $_SESSION['customer_name'] ?>" name="customer_name" id="customerName" class="mr10" ></li>
+              <li>評価：　
+								<select name="rating" id="rating" style="background:<?php if($_SESSION['rating']=='注意'){ echo '#ffc294';} elseif($_SESSION['rating']=='出禁'){ echo '#ffb5b5';} elseif($_SESSION['rating']=='優良'){ echo '#fff9cf';} ?> !important" >
+                  <option value="">全て</option>
+									<option style="background: #fff !important" value="一般" <?php if($_SESSION['rating']=='一般'){ echo 'selected';} ?> >一般</option>
+									<option style="background: #fff !important" value="優良" <?php if($_SESSION['rating']=='優良'){ echo 'selected';} ?> >優良</option>
+									<option style="background: #fff !important" value="注意" <?php if($_SESSION['rating']=='注意'){ echo 'selected';} ?> >注意</option>
+									<option style="background: #fff !important" value="出禁" <?php if($_SESSION['rating']=='出禁'){ echo 'selected';} ?> >出禁</option>
+									<option style="background: #fff !important" value="スタッフ" <?php if($_SESSION['rating']=='スタッフ'){ echo 'selected';} ?> >スタッフ</option>
+									<option style="background: #fff !important" value="業者" <?php if($_SESSION['rating']=='業者'){ echo 'selected';} ?> >業者</option>
+									<option style="background: #fff !important" value="その他" <?php if($_SESSION['rating']=='その他'){ echo 'selected';} ?> >その他</option>
+								</select> 
+              </li>
               <li>電話番号：　<input type="text" value="<?php echo $_SESSION['tel'] ?>" name="tel" id="tel" class="mr10" ></li>
               <li>住所：　<input type="text" value="<?php echo $_SESSION['address'] ?>" name="address" id="address" class="mr10" ></li>
             </ul>
@@ -119,6 +127,7 @@ function sortByKey($key_name, $sort_order, $array) {
             <input type="submit" value="リセット" name="reset" class="resetBtn" >
           </form>
         </div>
+        <span class="btn dataDelete" data-id="historyList" data-mode="call" >チェックした履歴を削除</span>
 <?php if($pagerData['end_page']>1){ ?>
 <div class="pager">
 <ul class="clearfix">
@@ -130,9 +139,10 @@ function sortByKey($key_name, $sort_order, $array) {
 </ul>
 </div>
 <?php } ?>
-        <table id="historyList" >
+        <table id="historyList" class="w100" >
           <thead>
             <tr>
+              <th style="width:33px !important;"><input type="checkbox" class="checkAll" data-id="historyList" ></th>
               <th style="width:50px !important;">No</th>
               <th style="width:165px !important;">着信日時</th>
               <th style="width:90px !important;">会員ID</th>
@@ -145,10 +155,18 @@ function sortByKey($key_name, $sort_order, $array) {
           <tbody>
 <?php
 $i = 1;
-foreach((array)$res AS $callHistoryData){
-  switch ($callHistoryData['rating']) {
+foreach((array)$usageDataAry AS $callHistoryData){
+  $sql = "SELECT `id` FROM `customer_data` AS `cd` WHERE (`tel1` = '{$callHistoryData['num']}' OR `tel2` = '{$callHistoryData['num']}' OR `tel3` = '{$callHistoryData['num']}') LIMIT 1";
+  $customerExist = dbCount($sql);
+  $sql = "SELECT * FROM `customer_data` AS `cd` WHERE (`tel1` = '{$callHistoryData['num']}' OR `tel2` = '{$callHistoryData['num']}' OR `tel3` = '{$callHistoryData['num']}') {$searchCondition} LIMIT 1";
+  $customerData = get1Record($sql);
+  if(($customerExist && $customerData) || (!$searchConditionAry && $callHistoryData)){
+  switch ($customerData['rating']) {
     case '注意':
       $statCol = 'style="background: #ffc294"';
+      break;
+    case '優良':
+      $statCol = 'style="background: #fff9cf"';
       break;
     case '出禁':
       $statCol = 'style="background: #ffb5b5"';
@@ -158,16 +176,17 @@ foreach((array)$res AS $callHistoryData){
       break;
   }
 ?>
-            <tr data-customer-id="<?php echo $callHistoryData['cid'] ?>" data-customer-num="<?php echo $callHistoryData['num'] ?>" <?php echo $statCol ?> >
-              <td style="width:50px !important;"><?php echo $i ?></td>
+            <tr data-customer-id="<?php echo $customerData['id'] ?>" data-customer-num="<?php echo $callHistoryData['num'] ?>" <?php echo $statCol ?> >
+              <td><input type="checkbox" value="<?php echo $callHistoryData['id'] ?>" ></td>
+              <td style="width:50px !important;"><?php echo $start + $i ?></td>
               <td style="width:165px !important; text-align:center;"><?php echo date("Y-m-d H:i:s",strtotime($callHistoryData['time'])) ?></td>
-              <td style="width:90px !important; text-align:center;"><?php echo $callHistoryData['customer_id'] ?></td>
-              <td style="width:300px !important; text-align:left;"><?php echo $callHistoryData['name'] ?></td>
-              <td style="width:130px !important; text-align:center;"><?php echo $callHistoryData['num'] ?></td>
-              <td><?php echo $callHistoryData['address'] ?></td>
-              <!-- <td><?php echo $callHistoryData['remark'] ?></td> -->
+              <td style="width:90px !important; text-align:center;"><?php echo $customerData['customer_id'] ?></td>
+              <td style="width:300px !important; text-align:left;"><?php echo $customerData['name'] ?></td>
+              <td style="width:130px !important; text-align:center;"><?php echo telSeparator($callHistoryData['num']) ?></td>
+              <td><?php echo $customerData['address'] ?></td>
+              <!-- <td><?php echo $customerData['remark'] ?></td> -->
             </tr>
-<?php $i++;} ?>
+<?php $i++;}} ?>
           </tbody>
         </table>
 <?php if($pagerData['end_page']>1){ ?>

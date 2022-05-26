@@ -43,6 +43,11 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
 	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
 	<title>ドM会員管理システム</title>
 </head>
+<style>
+	#wrapper {
+		background: <?php echo $shopBgColorAry[$_SESSION['id']] ?>
+	}
+</style>
 <body id="index" >
 	<div id="inwrap">
 		<div id="panel">

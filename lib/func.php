@@ -23,8 +23,8 @@ define("SITE_DB_DBNAME_CTI",	'dom_cti');
 define("SITE_DB_USER_CTI",		'araratcti');
 define("SITE_DB_PASS_CTI",		'arrtcti2022');
 
-define("VER",		'0.7');
-define("BUSTING_DATE",		'20220520');
+define("VER",		'0.8.0');
+define("BUSTING_DATE",		'202205261700');
 
 define("SALT",			'EVW53pu3Gm');
 
@@ -50,10 +50,12 @@ if($_SERVER['SCRIPT_NAME']!='/index.php' && $_SERVER['SCRIPT_NAME']!='/api/respo
 		$_SESSION["mode"] = $_COOKIE["mode"];
 		$_SESSION["signal_mode"] = $_COOKIE["signal_mode"];
 		$_SESSION["shop_name"] = $_COOKIE["shop_name"];
-		$_SESSION['start_date'] = $_COOKIE['start_date'];
-		$_SESSION['start_time'] = $_COOKIE['start_time'];
-		$_SESSION['end_date'] = $_COOKIE['end_date'];
-		$_SESSION['end_time'] = $_COOKIE['end_time'];
+    if(!$_SESSION['start_date']){
+      $_SESSION['start_date'] = date("Y年m月d日",strtotime("-7 day"));
+      $_SESSION['start_time'] = date("00:00",strtotime("-7 day"));
+      $_SESSION['end_date'] = date("Y年m月d日");
+      $_SESSION['end_time'] = date("23:59");
+    }
   }
 }
 
@@ -776,6 +778,17 @@ return $hm;
 
 }
 
+function telSeparator($number) {//電話番号をハイフンで区切る
+  $searchHead = '/050|070|080|090/';
+  if(preg_match($searchHead, $number)){
+    $separatedNumber = $number[0].$number[1].$number[2].'-'.$number[3].$number[4].$number[5].$number[6].'-'.$number[7].$number[8].$number[9].$number[10];
+  }else{
+    $separatedNumber = $number;
+  }
+  return $separatedNumber;
+
+}
+
 function getpager($allNum, $itemperCount, $currentPage = 1){
 	if(!$currentPage){
 		$currentPage = 1;
@@ -823,15 +836,21 @@ function getpager($allNum, $itemperCount, $currentPage = 1){
 	return $res;
 }
 
-$sql ="SELECT `shop_id`,`cti_color` FROM `shops`";
+$sql ="SELECT `shop_id`,`name_ja`,`cti_color`,`per_count` FROM `shops` WHERE `is_disabled` = 0";
 $result = getRecord($sql,1);
-foreach($result AS $shopNameData){
-  $shopNameAry[$shopNameData['shop_id']] = $shopNameData['name_ja'];
-  if(!$shopNameData['cti_color']){
-    $shopNameData['cti_color'] = '#ffffff';
+foreach($result AS $shopData){
+  $shopNameAry[$shopData['shop_id']] = $shopData['name_ja'];
+  if(!$shopData['cti_color']){
+    $shopData['cti_color'] = '#ffffff';
   }
-  $shopBgColorAry[$shopNameData['shop_id']] = $shopNameData['cti_color'];
+  $shopBgColorAry[$shopData['shop_id']] = $shopData['cti_color'];
+  if(!$shopData['per_count']){
+    $shopData['per_count'] = '25';
+  }
+  $shopPerCountAry[$shopData['shop_id']] = $shopData['per_count'];
 }
   $shopNameAry['testshop'] = 'テスト店舗';
+  $shopBgColorAry['testshop'] = '#ffffff';
+  $shopPerCountAry['testshop'] = 25;
 
 $weekJaAry = ['日','月','火','水','木','金','土'];

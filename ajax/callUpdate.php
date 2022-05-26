@@ -1,15 +1,36 @@
 <?php 
   include_once($_SERVER['DOCUMENT_ROOT'].'/lib/func.php');
-  $sql = "SELECT * FROM `call_history` WHERE `shop_id` = '{$_SESSION['id']}' ORDER BY `time` DESC LIMIT 300";
-  $res = getRecord($sql);
+
+  $sql = "SELECT `id` FROM `call_history` WHERE `is_delete` = 0 AND `shop_id` = '{$_SESSION['id']}' ORDER BY `time` DESC";
+  $allCount = dbCount($sql);
+
+  $perCount = $shopPerCountAry[$_SESSION['id']];
+  $pagerData = getPager($allCount,$perCount,$_SESSION['top_p']);
+  $start = ($pagerData['current_page'] - 1) * $perCount;
+
+  $sql = "SELECT * FROM `call_history` WHERE `is_delete` = 0 AND `shop_id` = '{$_SESSION['id']}' ORDER BY `time` DESC LIMIT {$start},{$perCount}";
+  $usageDataAry = getRecord($sql);
 ?>
         <div class="headinfo">
-          <div class="title">着信履歴（最新300件）<div class="btn customerEdit" id="customerAddBtn" >会員新規作成</div></div>
+          <div class="title">着信履歴<div class="btn customerEdit" id="customerAddBtn" >会員新規作成</div></div>
           <div class="loginName"><?php echo $_SESSION['shop_name'] ?>様</div>
         </div>
+        <span class="btn dataDelete" data-id="latestList" data-mode="call" >チェックした履歴を削除</span>
+<?php if($pagerData['end_page']>1){ ?>
+<div class="pager">
+<ul class="clearfix">
+<?php if($pagerData['prev_page']){ ?><li><a href="<?php echo $pagerData['pager_uri_array'][$pagerData['prev_page']] ?>">&lt;</a></li><?php } ?>
+<?php for($pi=$pagerData['start_page'];$pi<=$pagerData['end_page'];$pi++){ ?>
+<li><a href="<?php echo $pagerData['pager_uri_array'][$pi] ?>" <?php if($pagerData['current_page'] == $pi){echo 'class="current"';} ?> ><?php echo $pi ?></a></li>
+<?php } ?>
+<?php if($pagerData['next_page']){ ?><li><a href="<?php echo $pagerData['pager_uri_array'][$pagerData['next_page']] ?>">&gt;</a></li><?php } ?>
+</ul>
+</div>
+<?php } ?>
         <table id="latestList" class="w100" >
           <thead>
             <tr>
+              <th style="width:33px !important;"><input type="checkbox" class="checkAll" data-id="latestList" ></th>
               <th style="width:50px !important;">No</th>
               <th style="width:165px !important;">着信日時</th>
               <th style="width:90px !important;">会員ID</th>
@@ -22,30 +43,48 @@
           <tbody>
 <?php
 $i = 1;
-foreach((array)$res AS $callHistoryData){
-$sql = "SELECT `id` AS `cid`,`customer_id`,`name`,`address`,`rating` FROM `customer_data` WHERE (`tel1` = '{$callHistoryData['num']}' OR `tel2` = '{$callHistoryData['num']}' OR `tel3` = '{$callHistoryData['num']}')";
-$callUserData = get1Record($sql);
-switch ($callUserData['rating']) {
-  case '注意':
-    $statCol = 'style="background: #ffc294"';
-    break;
-  case '出禁':
-    $statCol = 'style="background: #ffb5b5"';
-    break;
-  default:
-    $statCol = 'style="background: #fff"';
-    break;
-}
+foreach((array)$usageDataAry AS $callHistoryData){
+  $sql = "SELECT `id` FROM `customer_data` AS `cd` WHERE (`tel1` = '{$callHistoryData['num']}' OR `tel2` = '{$callHistoryData['num']}' OR `tel3` = '{$callHistoryData['num']}') LIMIT 1";
+  $customerExist = dbCount($sql);
+  $sql = "SELECT * FROM `customer_data` AS `cd` WHERE (`tel1` = '{$callHistoryData['num']}' OR `tel2` = '{$callHistoryData['num']}' OR `tel3` = '{$callHistoryData['num']}') {$searchCondition} LIMIT 1";
+  $customerData = get1Record($sql);
+  if(($customerExist && $customerData) || (!$searchConditionAry && $callHistoryData)){
+  switch ($customerData['rating']) {
+    case '注意':
+      $statCol = 'style="background: #ffc294"';
+      break;
+    case '優良':
+      $statCol = 'style="background: #fff9cf"';
+      break;
+    case '出禁':
+      $statCol = 'style="background: #ffb5b5"';
+      break;
+    default:
+      $statCol = 'style="background: #fff"';
+      break;
+  }
 ?>
-            <tr <?php if($i==0){echo 'class="current"';} ?> data-customer-id="<?php echo $callUserData['cid'] ?>" data-customer-num="<?php echo $callHistoryData['num'] ?>" <?php echo $statCol ?> >
-              <td style="width:50px !important;"><?php echo $i ?></td>
+            <tr data-customer-id="<?php echo $customerData['id'] ?>" data-customer-num="<?php echo $callHistoryData['num'] ?>" <?php echo $statCol ?> >
+              <td><input type="checkbox" value="<?php echo $callHistoryData['id'] ?>" ></td>
+              <td style="width:50px !important;"><?php echo $start + $i ?></td>
               <td style="width:165px !important; text-align:center;"><?php echo date("Y-m-d H:i:s",strtotime($callHistoryData['time'])) ?></td>
-              <td style="width:90px !important; text-align:center;"><?php echo $callUserData['customer_id'] ?></td>
-              <td style="width:300px !important; text-align:left;"><?php echo $callUserData['name'] ?></td>
-              <td style="width:130px !important; text-align:center;"><?php echo $callHistoryData['num'] ?></td>
-              <td><?php echo $callUserData['address'] ?></td>
-              <!-- <td><?php echo $callHistoryData['remark'] ?></td> -->
+              <td style="width:90px !important; text-align:center;"><?php echo $customerData['customer_id'] ?></td>
+              <td style="width:300px !important; text-align:left;"><?php echo $customerData['name'] ?></td>
+              <td style="width:130px !important; text-align:center;"><?php echo telSeparator($callHistoryData['num']) ?></td>
+              <td><?php echo $customerData['address'] ?></td>
+              <!-- <td><?php echo $customerData['remark'] ?></td> -->
             </tr>
-<?php $i++;} ?>
+<?php $i++;}} ?>
           </tbody>
         </table>
+<?php if($pagerData['end_page']>1){ ?>
+<div class="pager">
+<ul class="clearfix">
+<?php if($pagerData['prev_page']){ ?><li><a href="<?php echo $pagerData['pager_uri_array'][$pagerData['prev_page']] ?>">&lt;</a></li><?php } ?>
+<?php for($pi=$pagerData['start_page'];$pi<=$pagerData['end_page'];$pi++){ ?>
+<li><a href="<?php echo $pagerData['pager_uri_array'][$pi] ?>" <?php if($pagerData['current_page'] == $pi){echo 'class="current"';} ?> ><?php echo $pi ?></a></li>
+<?php } ?>
+<?php if($pagerData['next_page']){ ?><li><a href="<?php echo $pagerData['pager_uri_array'][$pagerData['next_page']] ?>">&gt;</a></li><?php } ?>
+</ul>
+</div>
+<?php } ?>

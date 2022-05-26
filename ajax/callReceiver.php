@@ -9,6 +9,9 @@
     case '注意':
       $res['rating'] = 'style="background: #ffc294"';
       break;
+    case '優良':
+      $res['rating'] = 'style="background: #fff9cf"';
+      break;
     case '出禁':
       $res['rating'] = 'style="background: #ffb5b5"';
       break;
@@ -17,6 +20,7 @@
       break;
   }
   $res['num'] = $_POST['num'];
+  $res['separated_num'] = telSeparator($_POST['num']);
   $res['id'] = $customerData['id'];
   $res['cid'] = $customerData['customer_id'];
   $res['name'] = $customerData['name'];

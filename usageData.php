@@ -63,6 +63,12 @@ $girlDataAry = getRecord($sql,1);
 	}
 	</style>
 </head>
+<style>
+	#slipListWrapper {
+		background: <?php echo $shopBgColorAry[$_SESSION['id']] ?>;
+		height: 100vh;
+	}
+</style>
 <body onUnload="modalClose()" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
 	<div id="slipListWrapper">
 <?php
@@ -74,13 +80,13 @@ $usageData['option'] = json_decode($usageData['p_option']);
 				<ul>
 					<li>
 						<input type="text" name="start_date" class="startDate" value="<?php echo date("Y年m月d日",strtotime($usageData['p_date'])) ?>" >
-							<input type="text" name="start_time" data-time-format="H:i" class="timePicker startTime" value="<?php echo date("H:i",strtotime($usageData['p_date'])) ?>" >
+							<input type="text" name="start_time" data-time-format="H:i" class="timePicker startTime" id="startTime" value="<?php echo date("H:i",strtotime($usageData['p_date'])) ?>" ><span id="currentTimeRegister">現在時刻を設定</span>
 						<li><?php echo $usageData['name'] ?>様　会員ID：<?php echo $usageData['customer_internal_id'] ?></li>
 					</li>
 				</ul>
 				<ul>
 					<li>
-						利用キャスト：　<select name="girl" class="girlSelector" id="select2" style="min-width:200px">
+						利用キャスト：　<select name="girl" class="girlSelector" id="select2" style="min-width:200px" inputmode="kana">
 							<option value="フリー" <?php if($usageData['girl'] == 'フリー'){echo 'selected';} ?> >フリー</option>
 	<?php
 	foreach((array)$girlDataAry AS $girlData){
@@ -96,12 +102,12 @@ $usageData['option'] = json_decode($usageData['p_option']);
 							<option value="本指名" <?php if($usageData['nominate'] == '本指名'){echo 'selected';} ?> >本指名</option>
 						</select>
 					</li>
-					<li><input type="number" name="p_time" class="course" value="<?php echo $usageData['p_time'] ?>" min="0" required placeholder="60" >分</li>
-					<li><input type="number" name="price" class="price" value="<?php echo $usageData['price'] ?>" min="0" required placeholder="12000" >円</li>
+					<li><input type="number" name="p_time" class="course" value="<?php echo $usageData['p_time'] ?>" min="0" required placeholder="60"  inputmode="numeric" >分</li>
+					<li><input type="number" name="price" class="price" value="<?php echo $usageData['price'] ?>" min="0" required placeholder="12000"  inputmode="numeric" >円</li>
 				</ul>
 				<ul>
-					<li><input type="text" name="address" class="address" value="<?php echo $usageData['address'] ?>" placeholder="利用場所" ></li>
-					<li><input type="text" name="roomno" class="roomNumber" value="<?php echo $usageData['roomno'] ?>" placeholder="号数" >号室</li>
+					<li><input type="text" name="address" class="address" value="<?php echo $usageData['address'] ?>" placeholder="利用場所"  inputmode="kana" ></li>
+					<li><input type="text" name="roomno" class="roomNumber" value="<?php echo $usageData['roomno'] ?>" placeholder="号数" inputmode="numeric" >号室</li>
 				</ul>
 				<!--
 				<ul class="optionBox" >
@@ -112,7 +118,7 @@ $usageData['option'] = json_decode($usageData['p_option']);
 				</ul>
 				-->
 				<ul>
-					<li><textarea name="remark" id="remark" ><?php echo $usageData['remark'] ?></textarea></li>
+					<li><textarea name="remark" id="remark" inputmode="kana" ><?php echo $usageData['remark'] ?></textarea></li>
 				</ul>
 			</div>
 			<div class="footer"><input type="submit" class="btn saveBtn" value="伝票を保存" ></div>
@@ -138,4 +144,9 @@ $('#select2').select2({
 	function modalClose(){
 		window.opener.modalClose();
 	}
+	$(document).on("click","#currentTimeRegister",function () {
+		let now = new Date();
+		let currentTime = ('00'+ now.getHours()).slice(-2) + ':' + ('00'+ now.getMinutes()).slice(-2);
+		$('#startTime').val(currentTime)
+	});
 </script>

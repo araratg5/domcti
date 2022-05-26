@@ -8,6 +8,9 @@
   if($_SESSION['customer_name']){
     $searchConditionAry[] = "`name` LIKE '%{$_SESSION['customer_name']}%'";
   }
+  if($_SESSION['rating']){
+    $searchConditionAry[] = "`rating` = '{$_SESSION['rating']}'";
+  }
   if($_SESSION['tel']){
     $searchConditionAry[] = "((`tel1` LIKE '%{$_SESSION['tel']}%') OR (`tel2` LIKE '%{$_SESSION['tel']}%') OR (`tel3` LIKE '%{$_SESSION['tel']}%'))";
   }
@@ -40,6 +43,18 @@
             <ul>
               <li>会員ID：　<input type="text" value="<?php echo $_SESSION['customer_id'] ?>" name="customer_id" id="customerId" class="mr10" ></li>
               <li>会員名：　<input type="text" value="<?php echo $_SESSION['customer_name'] ?>" name="customer_name" id="customerName" class="mr10" ></li>
+              <li>評価：　
+								<select name="rating" id="rating" style="background:<?php if($_SESSION['rating']=='注意'){ echo '#ffc294';} elseif($_SESSION['rating']=='出禁'){ echo '#ffb5b5';} elseif($_SESSION['rating']=='優良'){ echo '#fff9cf';} ?> !important" >
+                  <option value="">全て</option>
+									<option style="background: #fff !important" value="一般" <?php if($_SESSION['rating']=='一般'){ echo 'selected';} ?> >一般</option>
+									<option style="background: #fff !important" value="優良" <?php if($_SESSION['rating']=='優良'){ echo 'selected';} ?> >優良</option>
+									<option style="background: #fff !important" value="注意" <?php if($_SESSION['rating']=='注意'){ echo 'selected';} ?> >注意</option>
+									<option style="background: #fff !important" value="出禁" <?php if($_SESSION['rating']=='出禁'){ echo 'selected';} ?> >出禁</option>
+									<option style="background: #fff !important" value="スタッフ" <?php if($_SESSION['rating']=='スタッフ'){ echo 'selected';} ?> >スタッフ</option>
+									<option style="background: #fff !important" value="業者" <?php if($_SESSION['rating']=='業者'){ echo 'selected';} ?> >業者</option>
+									<option style="background: #fff !important" value="その他" <?php if($_SESSION['rating']=='その他'){ echo 'selected';} ?> >その他</option>
+								</select> 
+              </li>
               <li>電話番号：　<input type="text" value="<?php echo $_SESSION['tel'] ?>" name="tel" id="tel" class="mr10" ></li>
               <li>住所：　<input type="text" value="<?php echo $_SESSION['address'] ?>" name="address" id="address" class="mr10" ></li>
               <li>登録店舗：　
@@ -96,6 +111,9 @@ foreach((array)$customerDataAry AS $customerData){
     case '注意':
       $statCol = 'style="background: #ffc294"';
       break;
+    case '優良':
+      $statCol = 'style="background: #fff9cf"';
+      break;
     case '出禁':
       $statCol = 'style="background: #ffb5b5"';
       break;
@@ -109,7 +127,7 @@ foreach((array)$customerDataAry AS $customerData){
               <td><?php echo $customerData['usage_shopname'] ?></td>
               <td><?php echo $customerData['name'] ?></td>
               <td><?php echo $customerData['rating'] ?></td>
-              <td><?php echo $customerData['tel'] ?></td>
+              <td><?php echo telSeparator($customerData['tel']) ?></td>
               <td><?php echo $customerData['address'] ?></td>
               <!-- <td><?php echo $customerData['remark'] ?></td> -->
               <td><div class="btn edit customerEdit" data-customer-id="<?php echo $customerData['id'] ?>" data-customer-num="<?php echo $customerData['tel'] ?>" >編集</div></td>

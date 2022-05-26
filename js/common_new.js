@@ -1,4 +1,4 @@
-$(document).on("click","#latestList tr,#historyList tr,.customerEdit",function () {
+$(document).on("click","#latestList tbody tr,#historyList tbody tr,.customerEdit",function () {
     customerModalLaunch(
       $(this).data("customer-id"),
       $(this).data("customer-num"),
@@ -16,7 +16,9 @@ $(document).on("click",".usageAdd,.usageEdit",function () {
 let showingNumberListjson;
 let showingNumberListArray = [];
 let showingNumberCount = 1;
+let clickCount = 0;
 function customerModalLaunch(id, num, isCall) {
+  clickCount++;
   if(id == undefined || id == null){
     id = '';
   }
@@ -32,10 +34,10 @@ function customerModalLaunch(id, num, isCall) {
   }
   showingNumberCount = showingNumberListArray.length + 1;
   
+  let screenWidth=parseInt(screen.availWidth);
+  var leftPos=screenWidth-870;
+  var topPos = showingNumberCount * 30;
   if(!showingNumberListArray.filter(e => e == num).length){
-    let screenWidth=parseInt(screen.availWidth);
-    var leftPos=screenWidth-870;
-    var topPos = showingNumberCount * 30;
     window.open(
       "customerData.php?cid=" + id + "&num=" + num + "&isCall=" + isCall,
       "window_cid" + num,
@@ -44,6 +46,15 @@ function customerModalLaunch(id, num, isCall) {
     showingNumberListArray.push(num);
     showingNumberListJson = JSON.stringify(showingNumberListArray, undefined, 1);
     localStorage.setItem('showing_number_list', showingNumberListJson);
+    clickCount = 0;
+  }
+  if(clickCount == 3){
+    var topPos = 0;
+    window.open(
+      "customerData.php?cid=" + id + "&num=" + num + "&isCall=" + isCall,
+      "window_cid" + num,
+      "width=870,height=760,scrollbars=yes,top=" + topPos + "px,left=" + leftPos + "px"
+    );
   }
 }
 function usageModalLaunch(cid,uid) {
@@ -183,6 +194,8 @@ $(document).on("click", ".dataDelete", function () {
           cache: false,
         })
         .done(function (data) {
+          console.log(data);
+          modalClose()
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
         });
@@ -198,6 +211,9 @@ $(document).on("click", "#latestList td", function () {
   $('#latestList tr').removeClass('current');
   $(this).parent('tr').addClass('current');
 });
+$(document).on("click", "#latestList tbody input,#historyList tbody input", function () {
+  e.preventDefault();
+});
 $(document).on("click", "#historyList td", function () {
   $('#historyList tr').removeClass('current');
   $(this).parent('tr').addClass('current');
@@ -209,4 +225,11 @@ $(document).on("click", ".usageEdit", function () {
 $(document).on("click", ".customerEdit", function () {
   $('#customerList tr').removeClass('current');
   $(this).parents('tr').addClass('current');
+});
+$(document).on("change","input[name='all_period']",function () {
+  if($(this).prop('checked')){
+    $("[name='start_date'],[name='start_time'],[name='end_date'],[name='end_time']").attr('readonly',true);
+  } else {
+    $("[name='start_date'],[name='start_time'],[name='end_date'],[name='end_time']").attr('readonly',false);
+  }
 });

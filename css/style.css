@@ -134,6 +134,7 @@ article::after {
   clear: both;
 }
 #modal .title {
+    position: relative;
     font-size: 18px;
     border-left: solid 5px #cccccc;
     color:#333;
@@ -175,19 +176,27 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] { 
   -moz-appearance:textfield; 
 } 
+input[readonly]{
+  pointer-events: none;
+  opacity: 0.5;
+}
 .bgw {
   background: #fff;
 }
 /* navi */
 #navi .headLogo {
   padding: 10px;
-  font-size: 18px;
+  font-size: 17px;
   color: #fff;
   font-weight: 700;
-  letter-spacing: .1em;
+  letter-spacing: 0;
   background: #1d9bf0;
   font-family: "M PLUS Rounded 1c";
   text-align: center;
+}
+#navi .headLogo span {
+  font-size: 10px;
+  padding-left: 4px;
 }
 #navi .loginName {
     background: #45659a;
@@ -334,6 +343,7 @@ th,td {
 .dataBox th, .dataBox .head  {
     background: #45659a;
     color:#fff;
+    text-align: left;
 }
 
 .dataBox td {
@@ -413,14 +423,21 @@ td .btn:nth-child(n+2) {
     background: #fff;
     padding: 0 10px;
     border-radius: 3px;
-    position: relative;
-    top: 0px;
+    position: absolute;
+    top: -3px;
+    right: 0px;
     border: solid 1px #ccc;
     box-sizing: border-box;
-    height: 31px;
+    height: 47px;
     line-height: 31px;
     font-weight: bold;
     color: #ff5d74;
+}
+.recentCallData .recentCallShopName {
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 2px;
+    text-align: right;
 }
 .dataDelete {
     background: #ff5d74;
@@ -428,30 +445,7 @@ td .btn:nth-child(n+2) {
     margin-top: 10px;
     display: inline-block;
 }
-/* #history */
-#latestList {
-  width: 100%;
-}
-#latestList td:nth-child(1) {
-  width: 160px !important;
-}
-#latestList td:nth-child(2) {
-  width: 90px !important;
-}
-#latestList td:nth-child(3) {
-  width: 260px !important;
-}
-#latestList td:nth-child(4) {
-  width: 130px !important;
-  text-align: center;
-}
-#latestList td:nth-child(5) {
-  width: 280px !important;
-}
-#latestList td:nth-child(7) {
-  width: 65px !important;
-  text-align: center;
-}
+/* #latest */
 #latestList tbody tr:hover {
   background: #e5f3fb !important;
   cursor: pointer;
@@ -463,29 +457,6 @@ tbody tr.current {
   /* animation: flash 1.5s infinite linear; */
 }
 /* #history */
-#historyList {
-  width: 100%;
-}
-#historyList td:nth-child(1) {
-  width: 160px !important;
-}
-#historyList td:nth-child(2) {
-  width: 90px !important;
-}
-#historyList td:nth-child(3) {
-  width: 260px !important;
-}
-#historyList td:nth-child(4) {
-  width: 130px !important;
-  text-align: center;
-}
-#historyList td:nth-child(5) {
-  width: 280px !important;
-}
-#historyList td:nth-child(7) {
-  width: 65px !important;
-  text-align: center;
-}
 #historyList tbody tr:hover {
   background: #e5f3fb !important;
   cursor: pointer;
@@ -685,8 +656,6 @@ tbody tr.current {
   position: relative;
   padding: 30px;
   width: 100%;
-  background: #f8f8f8;
-  height: 100vh;
 }
 #modal #modalClose {
     position: absolute;
@@ -759,7 +728,6 @@ tbody tr.current {
 
 .slipList {
   padding: 10px;
-  background: #fff;
 }
 .slipList.current {
   background: #e5f3fb;
@@ -819,6 +787,16 @@ tbody tr.current {
     padding: 5px;
     width: 840px;
     height: 105px;
+}
+.slipList #currentTimeRegister {
+    background: #f6f6f6;
+    border: solid 1px #ccc;
+    padding: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.slipList #currentTimeRegister:hover {
+    background: #f8ffda;
 }
 .select2-container .select2-selection--single {
     height: 31px !important;
@@ -965,3 +943,9 @@ thead th {
   100% {
     -webkit-transform: rotate(-360deg);
             transform: rotate(-360deg); } }
+/* config */
+#colorPickerBox {
+  position: relative;
+  top: 5px;
+  height: 30px;
+}

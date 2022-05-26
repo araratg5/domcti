@@ -120,6 +120,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
 	<title>ドM会員管理システム</title>
 </head>
+<style>
+	#wrapper {
+		background: <?php echo $shopBgColorAry[$_SESSION['id']] ?>
+	}
+</style>
 <body id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
   <div id="wrapper">
 <?php include_once(DOCUMENT_ROOT.'/include/navi.php') ?>

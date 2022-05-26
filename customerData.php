@@ -65,17 +65,27 @@ if($_GET['isCall'] == 1){
 }
 if(is_numeric($_GET['num'])){
 	if($customerData){
-		$sql = "SELECT * FROM `call_history` WHERE `num` IN ('{$customerData['tel1']}','{$customerData['tel2']}','{$customerData['tel3']}') ORDER BY `time` DESC LIMIT {$mode},1";
+		if($customerData['tel1']){
+			$telList[] = "'{$customerData['tel1']}'";
+		}
+		if($customerData['tel2']){
+			$telList[] = "'{$customerData['tel2']}'";
+		}
+		if($customerData['tel3']){
+			$telList[] = "'{$customerData['tel3']}'";
+		}
+		$telListStr = implode(',',$telList);
+		$sql = "SELECT * FROM `call_history` WHERE `is_delete` = 0 AND `num` IN ({$telListStr}) ORDER BY `time` DESC LIMIT {$mode},1";
 	} else {
-		$sql = "SELECT * FROM `call_history` WHERE `num` = '{$_GET['num']}' ORDER BY `time` DESC LIMIT {$mode},1";
+		$sql = "SELECT * FROM `call_history` WHERE `is_delete` = 0 AND `num` = '{$_GET['num']}' ORDER BY `time` DESC LIMIT {$mode},1";
 	}
 	$recentCallData = get1Record($sql);
 	if($_GET['isCall'] == 1 && $recentCallData['time']==''){
-		$recentCallData['time'] = '<div class="recentCallData">初回着信</div>';
+		$recentCallData['time'] = '<div class="recentCallData">初回着信<div class="recentCallShopName">'.$shopNameAry[$recentCallData['shop_id']].'</div></div>';
 	} elseif($_GET['isCall'] == 1) {
-		$recentCallData['time'] = '<div class="recentCallData">直近着信：'.$recentCallData['time'].'</div>';
+		$recentCallData['time'] = '<div class="recentCallData">直近着信：'.$recentCallData['time'].'<div class="recentCallShopName">'.$shopNameAry[$recentCallData['shop_id']].'</div></div>';
 	} elseif($recentCallData['time']) {
-		$recentCallData['time'] = '<div class="recentCallData">前回着信：'.$recentCallData['time'].'</div>';
+		$recentCallData['time'] = '<div class="recentCallData">前回着信：'.$recentCallData['time'].'<div class="recentCallShopName">'.$shopNameAry[$recentCallData['shop_id']].'</div></div>';
 	}
 }
 ?>
@@ -88,6 +98,39 @@ if(is_numeric($_GET['num'])){
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 	<title><?php echo $customerData['name'] ?></title>
 </head>
+<style>
+	body {
+		background: <?php echo $shopBgColorAry[$_SESSION['id']] ?>
+	}
+</style>
+<script>
+function modalClose(num){
+	$('.modalLoading').show();
+	var userData ={cid: $('#cid').val()};
+	$.ajax({
+		url: "ajax/modalUsageUpdate.php",
+		data: userData,
+		type: "POST",
+		cache: false,
+	})
+	.done(function (data) {
+		$('#modalUsageListWrapper').html(data);
+		$('.modalLoading').hide();
+	})
+	.fail(function (jqXHR, textStatus, errorThrown) {
+	});
+	window.opener.modalClose();
+  showingNumberListjson = localStorage.getItem('showing_number_list');
+  if(showingNumberListjson){
+    showingNumberListArray = JSON.parse(showingNumberListjson);
+  }
+  showingNumberListArray = showingNumberListArray.filter(function(v){
+    return ! num.includes(v);
+  });
+  showingNumberListJson = JSON.stringify(showingNumberListArray, undefined, 1);
+	localStorage.setItem('showing_number_list', showingNumberListJson);
+}
+</script>
 <body onBlur="focus()" onUnload="modalClose('<?php echo $_REQUEST['num'] ?>')" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
 <div id="loader"></div>
   <div id="modal">
@@ -102,7 +145,7 @@ if(is_numeric($_GET['num'])){
 						<tr>
 							<th>会員名</th>
 							<td colspan="3">
-								<input type="text" name="name" required id="name" value="<?php echo $customerData['name'] ?>">様
+								<input type="text" name="name" required id="name" value="<?php echo $customerData['name'] ?>" inputmode="kana" >様
 								<?php if($_REQUEST['cid'] != ''){ ?>
 								<span class="registShopName">（<?php echo $customerData['usage_shopname'] ?>登録）</span>
 								<?php } ?>
@@ -111,10 +154,11 @@ if(is_numeric($_GET['num'])){
 							<td><?php echo $customerData['customer_id'] ?></td>
 						</tr>
 						<tr>
-							<th>登録日時</th><td><?php echo $customerData['created'] ?></td><th>ステータス：</th>
+							<th>登録日時</th><td><?php echo $customerData['created'] ?></td><th>ステータス</th>
 							<td>
-								<select name="rating" id="rating" style="background:<?php if($customerData['rating']=='注意'){ echo '#ffc294';} elseif($customerData['rating']=='出禁'){ echo '#ffb5b5';} ?> !important" >
+								<select name="rating" id="rating" style="background:<?php if($customerData['rating']=='注意'){ echo '#ffc294';} elseif($customerData['rating']=='出禁'){ echo '#ffb5b5';} elseif($customerData['rating']=='優良'){ echo '#fff9cf';} ?> !important" >
 									<option style="background: #fff !important" value="一般" <?php if($customerData['rating']=='一般'){ echo 'selected';} ?> >一般</option>
+									<option style="background: #fff !important" value="優良" <?php if($customerData['rating']=='優良'){ echo 'selected';} ?> >優良</option>
 									<option style="background: #fff !important" value="注意" <?php if($customerData['rating']=='注意'){ echo 'selected';} ?> >注意</option>
 									<option style="background: #fff !important" value="出禁" <?php if($customerData['rating']=='出禁'){ echo 'selected';} ?> >出禁</option>
 									<option style="background: #fff !important" value="スタッフ" <?php if($customerData['rating']=='スタッフ'){ echo 'selected';} ?> >スタッフ</option>
@@ -127,33 +171,41 @@ if(is_numeric($_GET['num'])){
 								<select name="birth_month" id="">
 									<option value="">-</option>
 <?php for($i = 1;$i < 13;$i++){ ?>
-									<option value="<?php echo $i ?>" <?php if($customerData['birth_month']==$i){ echo 'selected';} ?> ><?php echo $i ?></option>
+									<option value="<?php echo $start + $i ?>" <?php if($customerData['birth_month']==$i){ echo 'selected';} ?> ><?php echo $start + $i ?></option>
 <?php } ?>
 								</select>/
 								<select name="birth_day" id="">
 									<option value="">-</option>
 <?php for($i = 1;$i < 32;$i++){ ?>
-									<option value="<?php echo $i ?>" <?php if($customerData['birth_day']==$i){ echo 'selected';} ?> ><?php echo $i ?></option>
+									<option value="<?php echo $start + $i ?>" <?php if($customerData['birth_day']==$i){ echo 'selected';} ?> ><?php echo $start + $i ?></option>
 <?php } ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<th>住所</th>
-							<td colspan="5"><input type="text" name="address" style="width: 442px" id="address" value="<?php echo $customerData['address'] ?>" ><input type="text" style="width: 55px;" name="roomno" value="<?php echo $customerData['roomno'] ?>" >号室</td>
+							<th>住所１</th>
+							<td colspan="5"><input type="text" name="address" style="width: 442px" id="address" value="<?php echo $customerData['address'] ?>" inputmode="kana" ><input type="text" style="width: 55px;" name="roomno" value="<?php echo $customerData['roomno'] ?>" inputmode="numeric" >号室</td>
+						</tr>
+						<tr>
+							<th>住所２</th>
+							<td colspan="5"><input type="text" name="address2" style="width: 442px" id="address2" value="<?php echo $customerData['address2'] ?>" inputmode="kana" ><input type="text" style="width: 55px;" name="roomno2" value="<?php echo $customerData['roomno2'] ?>" inputmode="numeric" >号室</td>
+						</tr>
+						<tr>
+							<th>住所３</th>
+							<td colspan="5"><input type="text" name="address3" style="width: 442px" id="address3" value="<?php echo $customerData['address3'] ?>" inputmode="kana" ><input type="text" style="width: 55px;" name="roomno3" value="<?php echo $customerData['roomno3'] ?>" inputmode="numeric" >号室</td>
 						</tr>
 						<tr>
 							<th>登録番号リスト</th>
 							<td colspan="5">
-								<input type="number" min="0" name="tel1" id="tel1" value="<?php echo $customerData['tel1'] ?>" style="width: 208px">
-								<input type="number" min="0" name="tel2" id="tel2" value="<?php echo $customerData['tel2'] ?>" style="width: 208px">
-								<input type="number" min="0" name="tel3" id="tel3" value="<?php echo $customerData['tel3'] ?>" style="width: 208px">
+								<input type="number" min="0" name="tel1" id="tel1" value="<?php echo $customerData['tel1'] ?>" inputmode="numeric" style="width: 208px">
+								<input type="number" min="0" name="tel2" id="tel2" value="<?php echo $customerData['tel2'] ?>" inputmode="numeric" style="width: 208px">
+								<input type="number" min="0" name="tel3" id="tel3" value="<?php echo $customerData['tel3'] ?>" inputmode="numeric" style="width: 208px">
 							</td>
 						</tr>
 						<tr>
 							<th>備考</th>
 							<td colspan="5">
-								<textarea name="remark" id="remark" ><?php echo $customerData['remark'] ?></textarea>
+								<textarea name="remark" id="remark" inputmode="kana" ><?php echo $customerData['remark'] ?></textarea>
 							</td>
 						</tr>
 					</tbody>
@@ -330,31 +382,6 @@ $(document).on("click", ".saveBtn", function () {
 		$('form').submit();
 	}
 });
-function modalClose(num){
-	$('.modalLoading').show();
-	var userData ={cid: $('#cid').val()};
-	$.ajax({
-		url: "ajax/modalUsageUpdate.php",
-		data: userData,
-		type: "POST",
-		cache: false,
-	})
-	.done(function (data) {
-		$('#modalUsageListWrapper').html(data);
-		$('.modalLoading').hide();
-	})
-	.fail(function (jqXHR, textStatus, errorThrown) {
-	});
-	window.opener.modalClose();
-  showingNumberListjson = localStorage.getItem('showing_number_list');
-  if(showingNumberListjson){
-    showingNumberListArray = JSON.parse(showingNumberListjson);
-  }
-  showingNumberListArray = showingNumberListArray.filter(function(v){
-    return ! num.includes(v);
-  });
-  showingNumberListJson = JSON.stringify(showingNumberListArray, undefined, 1);
-	localStorage.setItem('showing_number_list', showingNumberListJson);
-}
+
 </script>
 <div class="modalLoading"><div class="fl fl-spinner spinner"><div class="cube1"></div><div class="cube2"></div></div></div>

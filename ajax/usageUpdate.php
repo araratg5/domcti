@@ -5,13 +5,22 @@
 
   $_SESSION['start_datetime'] = str_replace(['年','月','日'],['-','-',''],$_SESSION['start_date']).' '.$_SESSION['start_time'].':00';
   $_SESSION['end_datetime'] = str_replace(['年','月','日'],['-','-',''],$_SESSION['end_date']).' '.$_SESSION['end_time'].':00';
-  $searchConditionAry[] = "`p_date` BETWEEN '{$_SESSION['start_datetime']}' AND '{$_SESSION['end_datetime']}'";
+
+  $searchConditionAry[] = "`shop_id` = '{$_SESSION['id']}'";
+  if(!$_SESSION['all_period']){
+    $searchConditionAry[] = "`p_date` BETWEEN '{$_SESSION['start_datetime']}' AND '{$_SESSION['end_datetime']}'";
+  }
   if($_SESSION['customer_id']){
     $searchConditionAry[] = "`customer_internal_id` LIKE '%{$_SESSION['customer_id']}%'";
   }
   if($_SESSION['customer_name']){
     $searchConditionAry[] = "`name` LIKE '%{$_SESSION['customer_name']}%'";
   }
+/*
+  if($_SESSION['rating']){
+    $searchConditionAry[] = "`rating` = '{$_SESSION['rating']}'";
+  }
+*/
   if($_SESSION['tel']){
     $searchConditionAry[] = "`tel` LIKE '%{$_SESSION['tel']}%'";
   }
@@ -26,14 +35,14 @@
   }
   $searchCondition = implode(' AND ',$searchConditionAry);
 
-  $sql = "SELECT `id` FROM `usage_data` WHERE `is_delete` = 0 AND `shop_id` = '{$_SESSION['id']}' AND {$searchCondition} ORDER BY `p_date` DESC";
+  $sql = "SELECT `id` FROM `usage_data` WHERE `is_delete` = 0 AND {$searchCondition} ORDER BY `p_date` DESC";
   $allCount = dbCount($sql);
   
   $perCount = 300;
   $pagerData = getPager($allCount,$perCount,$_SESSION['usage_p']);
   $start = ($pagerData['current_page'] - 1) * $perCount;
   
-  $sql = "SELECT * FROM `usage_data` WHERE `is_delete` = 0 AND `shop_id` = '{$_SESSION['id']}' AND {$searchCondition} ORDER BY `p_date` DESC LIMIT {$start},{$perCount}";
+  $sql = "SELECT * FROM `usage_data` WHERE `is_delete` = 0 AND {$searchCondition} ORDER BY `p_date` DESC LIMIT {$start},{$perCount}";
   $usageDataAry = getRecord($sql);
 
   $sql = "SELECT * FROM `girls` WHERE `shop_id` = '{$_SESSION['id']}'";
@@ -50,15 +59,29 @@
             <ul>
               <li>期間：　</li>
               <li>
-                <input type="text" name="start_date" id="startDate" value="<?php echo $_SESSION['start_date'] ?>" >
-                <input type="text" name="start_time" class="timePicker" data-time-format="H:i" id="startTime" value="<?php echo $_SESSION['start_time'] ?>" >～
-                <input type="text" name="end_date" id="endDate" value="<?php echo $_SESSION['end_date'] ?>" >
-                <input type="text" name="end_time" class="timePicker" data-time-format="H:i" id="endTime" value="<?php echo $_SESSION['end_time'] ?>" >
+                全て：<input type="checkbox" name="all_period" value="1" <?php if($_SESSION['all_period']){ echo 'checked';} ?> >
+                <input type="text" name="start_date" id="startDate" value="<?php echo $_SESSION['start_date'] ?>" <?php if($_SESSION['all_period']){ echo 'readonly';} ?> >
+                <input type="text" name="start_time" <?php if($_SESSION['all_period']){ echo 'readonly';} ?> class="timePicker" data-time-format="H:i" id="startTime" value="<?php echo $_SESSION['start_time'] ?>" >～
+                <input type="text" name="end_date" id="endDate" value="<?php echo $_SESSION['end_date'] ?>" <?php if($_SESSION['all_period']){ echo 'readonly';} ?> >
+                <input type="text" name="end_time" class="timePicker" data-time-format="H:i" id="endTime" value="<?php echo $_SESSION['end_time'] ?>" <?php if($_SESSION['all_period']){ echo 'readonly';} ?> >(デフォルト直近一週間)
               </li>
             </ul>
             <ul>
               <li>会員ID：　<input type="text" value="<?php echo $_SESSION['customer_id'] ?>" name="customer_id" id="customerId" class="mr10" ></li>
               <li>会員名：　<input type="text" value="<?php echo $_SESSION['customer_name'] ?>" name="customer_name" id="customerName" class="mr10" ></li>
+              <!--
+              <li>評価：　
+								<select name="rating" id="rating" style="background:<?php if($_SESSION['rating']=='注意'){ echo '#ffc294';} elseif($_SESSION['rating']=='出禁'){ echo '#ffb5b5';} elseif($_SESSION['rating']=='優良'){ echo '#fff9cf';} ?> !important" >
+									<option style="background: #fff !important" value="一般" <?php if($_SESSION['rating']=='一般'){ echo 'selected';} ?> >一般</option>
+									<option style="background: #fff !important" value="優良" <?php if($_SESSION['rating']=='優良'){ echo 'selected';} ?> >優良</option>
+									<option style="background: #fff !important" value="注意" <?php if($_SESSION['rating']=='注意'){ echo 'selected';} ?> >注意</option>
+									<option style="background: #fff !important" value="出禁" <?php if($_SESSION['rating']=='出禁'){ echo 'selected';} ?> >出禁</option>
+									<option style="background: #fff !important" value="スタッフ" <?php if($_SESSION['rating']=='スタッフ'){ echo 'selected';} ?> >スタッフ</option>
+									<option style="background: #fff !important" value="業者" <?php if($_SESSION['rating']=='業者'){ echo 'selected';} ?> >業者</option>
+									<option style="background: #fff !important" value="その他" <?php if($_SESSION['rating']=='その他'){ echo 'selected';} ?> >その他</option>
+								</select> 
+              </li>
+              -->
               <li>電話番号：　<input type="text" value="<?php echo $_SESSION['tel'] ?>" name="tel" id="tel" class="mr10" ></li>
               <li>住所：　<input type="text" value="<?php echo $_SESSION['address'] ?>" name="address" id="address" class="mr10" ></li>
             </ul>
@@ -127,6 +150,9 @@ foreach((array)$usageDataAry AS $usageData){
     case '注意':
       $statCol = 'style="background: #ffc294"';
       break;
+    case '優良':
+      $statCol = 'style="background: #fff9cf"';
+      break;
     case '出禁':
       $statCol = 'style="background: #ffb5b5"';
       break;
@@ -140,7 +166,7 @@ foreach((array)$usageDataAry AS $usageData){
               <td><?php echo date("Y-m-d H:i",strtotime($usageData['p_date'])) ?></td>
               <td><?php echo $usageData['customer_internal_id'] ?></td>
               <td><?php echo $usageData['name'] ?></td>
-              <td><?php echo $usageData['tel'] ?></td>
+              <td><?php echo telSeparator($usageData['tel']) ?></td>
               <td><?php echo $usageData['girl'] ?></td>
               <td><?php echo $usageData['nominate'] ?></td>
               <td><?php echo $usageData['p_time'] ?></td>
