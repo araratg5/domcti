@@ -2,6 +2,24 @@
 include_once($_SERVER['DOCUMENT_ROOT'].'/lib/func.php');
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
+	if($_REQUEST['uid'] == ''){
+		$sql = "SELECT * FROM `customer_data` WHERE `is_delete` = 0 AND `id` = '{$_REQUEST['cid']}'";
+		$customerData = get1Record($sql);
+		$pDate = date("Y-m-d 00:00:00");
+		$customerData['tel'] = $customerData['tel1'];
+		if(!$customerData['tel']){
+			$customerData['tel'] = $customerData['tel2'];
+		}
+		if(!$customerData['tel']){
+			$customerData['tel'] = $customerData['tel3'];
+		}
+		if(!$customerData['tel']){
+			$customerData['tel'] = '';
+		}
+		$sql = "INSERT INTO `usage_data` (`shop_id`,`customer_id`,`customer_internal_id`,`name`,`usage_shopname`,`tel`,`created`) VALUES ('{$_SESSION['id']}','{$customerData['id']}','{$customerData['customer_id']}','{$customerData['name']}','{$_SESSION['shop_name']}','{$customerData['tel']}',NOW())";
+		$_REQUEST['uid'] = insData($sql);
+	}
+
 	$postData = allescape($_POST);
 	$postData['p_date'] = str_replace(['年','月','日'],['-','-',''],$postData['start_date']).' '.date("H:i:00",strtotime($postData['start_time']));
 	$postData['p_option'] = json_encode($postData['options'],JSON_UNESCAPED_UNICODE);
@@ -19,34 +37,22 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 	$queryStr = implode(',',$queryAry);
 	$sql ="UPDATE `usage_data` SET {$queryStr} WHERE `id` = '{$_REQUEST['uid']}'";
 	dbQuery($sql);
+	header("Location:". "/usageData.php?uid={$_REQUEST['uid']}");
 }
 
-
-
-
-if($_REQUEST['uid']=='undefined'){
-	$sql = "SELECT * FROM `customer_data` WHERE `is_delete` = 0 AND `id` = '{$_REQUEST['cid']}'";
-	$customerData = get1Record($sql);
-	$pDate = date("Y-m-d 00:00:00");
-  $customerData['tel'] = $customerData['tel1'];
-  if(!$customerData['tel']){
-    $customerData['tel'] = $customerData['tel2'];
-  }
-  if(!$customerData['tel']){
-    $customerData['tel'] = $customerData['tel3'];
-  }
-  if(!$customerData['tel']){
-    $customerData['tel'] = '';
-  }
-	$sql = "INSERT INTO `usage_data` (`shop_id`,`customer_id`,`customer_internal_id`,`name`,`usage_shopname`,`address`,`tel`,`roomno`,`girl`,`p_date`,`nominate`,`is_delete`,`created`) VALUES ('{$_SESSION['id']}','{$customerData['id']}','{$customerData['customer_id']}','{$customerData['name']}','{$_SESSION['shop_name']}','{$customerData['address']}','{$customerData['tel']}','{$customerData['roomno']}','フリー','{$pDate}','フリー',1,NOW())";
-	$insertId = insData($sql);
-	header("Location:". "/usageData.php?uid={$insertId}");
-}
 $sql = "SELECT * FROM `usage_data` WHERE `id` = '{$_REQUEST['uid']}'";
 $usageData = get1Record($sql);
 
 $sql = "SELECT * FROM `girls` WHERE `shop_id` = '{$_SESSION['id']}'";
 $girlDataAry = getRecord($sql,1);
+
+if($_REQUEST['uid'] == ''){
+	$sql = "SELECT * FROM `customer_data` WHERE `is_delete` = 0 AND `id` = '{$_REQUEST['cid']}'";
+	$customerData = get1Record($sql);
+	$usageData['name'] = $customerData['name'];
+	$usageData['customer_internal_id'] = $customerData['customer_id'];
+	$usageData['p_date'] = date("Y-m-d H:00:00");
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
