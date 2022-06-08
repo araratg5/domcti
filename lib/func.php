@@ -1,6 +1,22 @@
 <?php
 session_start();
 
+//35.73.70.238開発IP
+switch ($_SERVER['HTTP_HOST']) {
+  case '35.73.70.28':
+define("GROUP_MODE",		'mode2');
+define("GROUP_NAME",		'スケベ');
+    break;
+  case 'cti.dev.sukebe-group.com':
+define("GROUP_MODE",		'mode2');
+define("GROUP_NAME",		'スケベ');
+    break;
+  default:
+define("GROUP_MODE",		'mode1');
+define("GROUP_NAME",		'ドＭ');
+    break;
+}
+
 ini_set('opcache.enable', 0);
 ini_set('opcache.enable_cli', 0);
 
@@ -11,20 +27,31 @@ ini_set("error_log", "/log/error.log");
 ini_set("allow_url_fopen",1);
 
 /**************************************
-  DB Setting_0(doemu-new)
+  DB Setting
 ****************************************/
-define("SITE_DB_HOST_DOM",		'o4043-291.kagoya.net');
-define("SITE_DB_DBNAME_DOM",	'search_dom');
-define("SITE_DB_USER_DOM",		'doemu_mst');
-define("SITE_DB_PASS_DOM",		'doemu81!');
+if(GROUP_MODE == 'mode1'){
+  define("SITE_DB_HOST_DOM",		'o4043-291.kagoya.net');
+  define("SITE_DB_DBNAME_DOM",	'search_dom');
+  define("SITE_DB_USER_DOM",		'doemu_mst');
+  define("SITE_DB_PASS_DOM",		'doemu81!');
+} else {
+  define("SITE_DB_HOST_DOM",		'o5044-902.kagoya.net');
+  define("SITE_DB_DBNAME_DOM",	'sukebe_portal_data');
+  define("SITE_DB_USER_DOM",		'sukebe_sv');
+  define("SITE_DB_PASS_DOM",		'P8FUeO9n2c');
+}
 
 define("SITE_DB_HOST_CTI",		'ararat-cti.cmj29l3jswws.ap-northeast-1.rds.amazonaws.com');
-define("SITE_DB_DBNAME_CTI",	'dom_cti');
+if(GROUP_MODE == 'mode1'){
+  define("SITE_DB_DBNAME_CTI",	'dom_cti');
+} else {
+  define("SITE_DB_DBNAME_CTI",	'sukebe_cti');
+}
 define("SITE_DB_USER_CTI",		'araratcti');
 define("SITE_DB_PASS_CTI",		'arrtcti2022');
 
-define("VER",		'0.8.0');
-define("BUSTING_DATE",		'202205261700');
+define("VER",		'0.9');
+define("BUSTING_DATE",		'202206081400');
 
 define("SALT",			'EVW53pu3Gm');
 
@@ -754,14 +781,24 @@ function validate($token, $throw = false)
 $alphabetAry = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','?'];
 
 function getCustomerId($id){
-  global $alphabetAry;
-  $numeric = substr($id, -3);
-  $numeric = sprintf('%03d', $numeric);
+  if(GROUP_MODE == 'mode1'){
+    global $alphabetAry;
+    $numeric = substr($id, -3);
+    $numeric = sprintf('%03d', $numeric);
 
-  $alpha1 = ($id / 1000) % 26;
-  $alpha2 = ($id / 26000) % 26;
-  $alpha3 = ($id / 676000) % 26;
-  $customerId = $alphabetAry[$alpha3].$alphabetAry[$alpha2].$alphabetAry[$alpha1].$numeric;
+    $alpha1 = ($id / 1000) % 26;
+    $alpha2 = ($id / 26000) % 26;
+    $alpha3 = ($id / 676000) % 26;
+    $customerId = $alphabetAry[$alpha3].$alphabetAry[$alpha2].$alphabetAry[$alpha1].$numeric;
+  } else {
+    $numeric2 = substr($id, -4);
+    $numeric2 = sprintf('%04d', $numeric2);
+
+    $numeric1 = floor($id / 10000);
+    $numeric1 = sprintf('%04d', $numeric1);
+
+    $customerId = $numeric1.'-'.$numeric2;
+  }
   return $customerId;
 }
 
@@ -836,7 +873,7 @@ function getpager($allNum, $itemperCount, $currentPage = 1){
 	return $res;
 }
 
-$sql ="SELECT `shop_id`,`name_ja`,`cti_color`,`per_count` FROM `shops` WHERE `is_disabled` = 0";
+$sql ="SELECT `shop_id`,`name_ja`,`cti_color`,`per_count`,`time_interval`,`table_sequence` FROM `shops` WHERE `is_disabled` = 0";
 $result = getRecord($sql,1);
 foreach($result AS $shopData){
   $shopNameAry[$shopData['shop_id']] = $shopData['name_ja'];
@@ -847,10 +884,21 @@ foreach($result AS $shopData){
   if(!$shopData['per_count']){
     $shopData['per_count'] = '25';
   }
+  if(!$shopData['time_interval']){
+    $shopData['time_interval'] = '30';
+  }
+  if(!$shopData['table_sequence']){
+    $shopData['table_sequence'] = '1,2,3,4,5,6';
+  }
   $shopPerCountAry[$shopData['shop_id']] = $shopData['per_count'];
+  $timeIntervalAry[$shopData['shop_id']] = $shopData['time_interval'];
+  $tableSequenceAry[$shopData['shop_id']] = $shopData['table_sequence'];
 }
   $shopNameAry['testshop'] = 'テスト店舗';
   $shopBgColorAry['testshop'] = '#ffffff';
   $shopPerCountAry['testshop'] = 25;
+  $timeIntervalAry['testshop'] = 30;
+  $tableSequenceAry['testshop'] = '1,2,3,4,5,6';
 
 $weekJaAry = ['日','月','火','水','木','金','土'];
+$tableColumnNameAry = ['','No','着信日時','会員ID','名前','番号','住所'];

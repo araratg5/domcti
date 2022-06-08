@@ -123,6 +123,17 @@ main .headinfo .loginName {
     border-radius: 20px;
 }
 
+.mode2 main .headinfo .loginName {
+    background: #dd1010;
+    color: #fff;
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+    text-align: center;
+    padding:0 10px;
+    border-radius: 20px;
+}
+
 article::after {
   content: '';
   display: block;
@@ -153,7 +164,7 @@ footer #copyRight {
 form {
   margin: 0;
 }
-select, input[type="text"], input[type="number"], input[type="password"], textarea {
+select, input[type="text"], input[type="tel"], input[type="password"], textarea {
     border: solid 1px #ccc;
     border-radius: 3px;
     padding: 3px;
@@ -164,16 +175,26 @@ select, input[type="text"], input[type="number"], input[type="password"], textar
     box-sizing: border-box;
     outline: none;
 }
-select:focus, input[type="text"]:focus, input[type="number"]:focus, input[type="password"]:focus, textarea:focus {
+select:focus, input[type="text"]:focus, input[type="tel"]:focus, input[type="password"]:focus, textarea:focus {
     border-color: dodgerBlue;
     box-shadow: 0 0 8px 0 dodgerBlue;
 }
-input[type="number"]::-webkit-outer-spin-button, 
-input[type="number"]::-webkit-inner-spin-button { 
+.mode2 select:focus, input[type="text"]:focus, input[type="tel"]:focus, input[type="password"]:focus, textarea:focus {
+    border-color: #ff1e1e;
+    box-shadow: 0 0 8px 0 #ff1e1e;
+}
+.mode2 .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: #fb5858;
+    color: white;
+}
+
+
+input[type="tel"]::-webkit-outer-spin-button, 
+input[type="tel"]::-webkit-inner-spin-button { 
   -webkit-appearance: none; 
   margin: 0; 
 } 
-input[type="number"] { 
+input[type="tel"] { 
   -moz-appearance:textfield; 
 } 
 input[readonly]{
@@ -191,6 +212,16 @@ input[readonly]{
   font-weight: 700;
   letter-spacing: 0;
   background: #1d9bf0;
+  font-family: "M PLUS Rounded 1c";
+  text-align: center;
+}
+.mode2 #navi .headLogo {
+  padding: 10px;
+  font-size: 15px;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0;
+  background: #dd1010;
   font-family: "M PLUS Rounded 1c";
   text-align: center;
 }
@@ -223,6 +254,9 @@ input[readonly]{
 #navi ul li a {
   color:#1d9bf0;
 }
+.mode2 #navi ul li a {
+  color:#dd1010;
+}
 #navi ul li i {
   width: 30px;
   text-align: center;
@@ -238,6 +272,20 @@ input[readonly]{
   font-weight: bold;
   text-shadow: 0px 1px 0px #1d9bf0;
 }
+
+.mode2 #navi ul li.current {
+  background: #fff;
+  background: #fb6b6b;
+  /* border-left: solid 5px var(--color-pink); */
+  border-left: solid 5px #dd1010;
+}
+.mode2 #navi ul li.current a {
+  color:#fff;
+  font-weight: bold;
+  text-shadow: 0px 1px 0px #dd1010;
+}
+
+
 /* commonHeader */
 #commonHeader {
   font-size: 22px;
@@ -275,6 +323,16 @@ background: #45659a;
     top: -2px;
     border-radius: 3px;
 }
+#index.mode2 th label {
+background: #8d5a5a;
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 10px;
+    position: relative;
+    top: -2px;
+    border-radius: 3px;
+}
+
 #index td {
   text-align: left;
 }
@@ -299,6 +357,16 @@ background: #45659a;
 }
 #index #loginbtn {
     background: #1d9bf0;
+    width: 50%;
+    margin: 10px 25%;
+    border: none;
+    color: #fff;
+    line-height: 40px;
+    height: 40px;
+    border-radius: 100vh;
+}
+#index.mode2 #loginbtn {
+    background: #f01d1d;
     width: 50%;
     margin: 10px 25%;
     border: none;
@@ -338,10 +406,15 @@ th,td {
     padding: 6px 6px;
 }
 .w100 {
-  width: 100%;
+  max-width: 100%;
 }
 .dataBox th, .dataBox .head  {
     background: #45659a;
+    color:#fff;
+    text-align: left;
+}
+.mode2 .dataBox th, .dataBox .head  {
+    background: #8d5a5a;
     color:#fff;
     text-align: left;
 }
@@ -393,6 +466,10 @@ td .btn:nth-child(n+2) {
   /* background: var(--color-green); */
   background: #1d9bf0;
 }
+.mode2 .btn.edit {
+  /* background: var(--color-green); */
+  background: #dd1010;
+}
 .btn.disabled {
   /* background: var(--color-green); */
   background: #ccc;
@@ -405,6 +482,12 @@ td .btn:nth-child(n+2) {
 }
 .btn.add {
   background: #1d9bf0;
+  height: 30px;
+  font-size: 14px;
+  padding: 0 20px;
+}
+.mode2 .btn.add {
+  background: #dd1010;
   height: 30px;
   font-size: 14px;
   padding: 0 20px;
@@ -438,6 +521,10 @@ td .btn:nth-child(n+2) {
     font-weight: normal;
     line-height: 2px;
     text-align: right;
+}
+#usageData .footer .recentCallData {
+  position: relative;
+  float: right;
 }
 .dataDelete {
     background: #ff5d74;
@@ -598,6 +685,10 @@ tbody tr.current {
     background: #e5f3fb !important;
     cursor: pointer;
 }
+#usage.mode2 table tbody tr:hover {
+    background: #fbe5e5 !important;
+    cursor: pointer;
+}
 
 /* #customer */
 #customer table {
@@ -631,6 +722,10 @@ tbody tr.current {
     background: #e5f3fb !important;
     cursor: pointer;
 }
+#customer.mode2 table tbody tr:hover {
+    background: #fbe5e5 !important;
+    cursor: pointer;
+}
 #customerAddBtn {
     background: #1d9bf0;
     color: #fff;
@@ -646,6 +741,26 @@ tbody tr.current {
     padding: 0 20px;
     border:0;
 }
+.mode2 #customerAddBtn {
+    background: #dd1010;
+    color: #fff;
+    height: 30px;
+    font-size:14px;
+    padding: 0 20px;
+}
+.mode2 .csvUpload {
+    background: #dd1010;
+    color: #fff;
+    height: 30px;
+    font-size:14px;
+    padding: 0 20px;
+    border:0;
+}
+.mode2 #customer table tbody tr:hover {
+    background: #fbe5e5 !important;
+    cursor: pointer;
+}
+
 /* config */
 #config li {
   width: 300px;
@@ -677,6 +792,7 @@ tbody tr.current {
   position: absolute;
   bottom: 0;
   left: 0;
+  width: calc(100%);
 }
 #slipListWrapper .footer .saveBtn {
   height: 40px;
@@ -739,6 +855,11 @@ tbody tr.current {
   border: none;
   margin-bottom: 0;
 }
+.slipList ul:first-child li:nth-last-child(2) {
+    font-weight: bold;
+    line-height: 29px;
+    color: #45659a;
+}
 .slipList ul:first-child li:last-child {
     margin-left: auto;
     font-weight: bold;
@@ -797,6 +918,11 @@ tbody tr.current {
 }
 .slipList #currentTimeRegister:hover {
     background: #f8ffda;
+}
+.slipList .recentCallData {
+  background:none;
+  border: 0;
+  top: 3px;
 }
 .select2-container .select2-selection--single {
     height: 31px !important;
@@ -858,6 +984,11 @@ tbody tr.current {
 	background: #1D9BF0;
 	color: #fff;
 }
+
+.mode2 .pager ul li a.current {
+	background: #dd1010;
+	color: #fff;
+}
 /* stickey */
 thead th {
   background: #45659A;
@@ -868,6 +999,17 @@ thead th {
   /* tbody内のセルより手前に表示する */
   z-index: 1;
 }
+/* stickey */
+.mode2 thead th {
+  background: #8d5a5a;
+  /* 縦スクロール時に固定する */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  /* tbody内のセルより手前に表示する */
+  z-index: 1;
+}
+
 
 /* loader */
 .loading {
@@ -899,6 +1041,26 @@ thead th {
   .spinner .cube1,
   .spinner .cube2 {
     background-color: #1D9BF0;
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-animation: cubemove 1.8s infinite ease-in-out;
+            animation: cubemove 1.8s infinite ease-in-out; }
+  .spinner .cube2 {
+    -webkit-animation-delay: -0.9s;
+            animation-delay: -0.9s; }
+
+.mode2 .spinner {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  top: calc(50% - 50px/2);
+  left: calc(50% - 50px/2); }
+  .spinner .cube1,
+  .spinner .cube2 {
+    background-color: #f01d1d;
     width: 15px;
     height: 15px;
     position: absolute;
@@ -943,9 +1105,25 @@ thead th {
   100% {
     -webkit-transform: rotate(-360deg);
             transform: rotate(-360deg); } }
+
 /* config */
 #colorPickerBox {
   position: relative;
   top: 5px;
   height: 30px;
+}
+#sequenceSettingList {
+  margin-bottom: 20px;
+  background: #fff;
+  width: 600px;
+}
+#sequenceSettingList li {
+  width: calc((100% - 24px) / 6);
+  border: solid 1px #ccc;
+  margin: 2px;
+  cursor: pointer;
+}
+#sequenceSettingList li label {
+  display: block;
+  cursor: pointer;
 }

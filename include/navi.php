@@ -2,7 +2,7 @@
 $currentAry[str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME'])] = 'current';
 ?> 
     <aside id="navi" >
-      <div class="headLogo">ドM会員管理システム<span>ver.<?php echo VER ?></span></div>
+      <div class="headLogo"><?php echo GROUP_NAME ?>会員管理システム<span>ver.<?php echo VER ?></span></div>
       <ul>
         <li class="<?php echo $currentAry['top'] ?>" ><a href="/top.php" ><i class="fas fa-home"></i>トップ（最新着歴）</a></li>
         <li class="<?php echo $currentAry['history'] ?>" ><a href="/history.php" ><i class="fas fa-hotel"></i>着信履歴検索</a></li>

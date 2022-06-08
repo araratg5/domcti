@@ -1,10 +1,10 @@
 <?php 
 include_once($_SERVER['DOCUMENT_ROOT'].'/lib/func.php');
 
+$sql = "SELECT * FROM `customer_data` WHERE `is_delete` = 0 AND `id` = '{$_REQUEST['cid']}'";
+$customerData = get1Record($sql);
 if($_SERVER['REQUEST_METHOD']=='POST'){
 	if($_REQUEST['uid'] == ''){
-		$sql = "SELECT * FROM `customer_data` WHERE `is_delete` = 0 AND `id` = '{$_REQUEST['cid']}'";
-		$customerData = get1Record($sql);
 		$pDate = date("Y-m-d 00:00:00");
 		$customerData['tel'] = $customerData['tel1'];
 		if(!$customerData['tel']){
@@ -43,7 +43,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 $sql = "SELECT * FROM `usage_data` WHERE `id` = '{$_REQUEST['uid']}'";
 $usageData = get1Record($sql);
 
-$sql = "SELECT * FROM `girls` WHERE `shop_id` = '{$_SESSION['id']}'";
+$sql = "SELECT * FROM `girls` WHERE `shop_id` = '{$_SESSION['id']}' ORDER BY CAST(`name` AS CHAR)";
 $girlDataAry = getRecord($sql,1);
 
 if($_REQUEST['uid'] == ''){
@@ -53,6 +53,25 @@ if($_REQUEST['uid'] == ''){
 	$usageData['customer_internal_id'] = $customerData['customer_id'];
 	$usageData['p_date'] = date("Y-m-d H:00:00");
 }
+
+if($customerData){
+	if($customerData['tel1']){
+		$telList[] = "'{$customerData['tel1']}'";
+	}
+	if($customerData['tel2']){
+		$telList[] = "'{$customerData['tel2']}'";
+	}
+	if($customerData['tel3']){
+		$telList[] = "'{$customerData['tel3']}'";
+	}
+	$telListStr = @implode(',',$telList);
+	if($telListStr){
+		$sql = "SELECT * FROM `call_history` WHERE `is_delete` = 0 AND `num` IN ({$telListStr}) ORDER BY `time` DESC LIMIT 0,1";
+		$recentCallData = get1Record($sql);
+		$recentCallData['time'] = '<div class="recentCallData">最終着信：'.$recentCallData['time'].'<div class="recentCallShopName">'.$shopNameAry[$recentCallData['shop_id']].'</div></div>';
+	}
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -61,7 +80,7 @@ if($_REQUEST['uid'] == ''){
 	<link rel="icon" href="favicon.ico" size="16x16" type="image/png">
 	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-	<title>ドM会員管理システム</title>
+	<title><?php echo GROUP_NAME ?>会員管理システム</title>
 	<style>
 	.select2-results , .select2-results__options {
 	    max-height: 300px !important;
@@ -75,7 +94,7 @@ if($_REQUEST['uid'] == ''){
 		height: 100vh;
 	}
 </style>
-<body onUnload="modalClose()" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
+<body class="<?php echo GROUP_MODE ?>" onUnload="modalClose()" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
 	<div id="slipListWrapper">
 <?php
 $usageData['option'] = json_decode($usageData['p_option']);
@@ -89,6 +108,7 @@ $usageData['option'] = json_decode($usageData['p_option']);
 							<input type="text" name="start_time" data-time-format="H:i" class="timePicker startTime" id="startTime" value="<?php echo date("H:i",strtotime($usageData['p_date'])) ?>" ><span id="currentTimeRegister">現在時刻を設定</span>
 						<li><?php echo $usageData['name'] ?>様　会員ID：<?php echo $usageData['customer_internal_id'] ?></li>
 					</li>
+					<li></li>
 				</ul>
 				<ul>
 					<li>
@@ -108,12 +128,12 @@ $usageData['option'] = json_decode($usageData['p_option']);
 							<option value="本指名" <?php if($usageData['nominate'] == '本指名'){echo 'selected';} ?> >本指名</option>
 						</select>
 					</li>
-					<li><input type="number" name="p_time" class="course" value="<?php echo $usageData['p_time'] ?>" min="0" required placeholder="60"  inputmode="numeric" >分</li>
-					<li><input type="number" name="price" class="price" value="<?php echo $usageData['price'] ?>" min="0" required placeholder="12000"  inputmode="numeric" >円</li>
+					<li><input type="tel" name="p_time" class="course" value="<?php echo $usageData['p_time'] ?>" min="0" required placeholder="60"  inputmode="tel" style="ime-mode: inactive;" >分</li>
+					<li><input type="tel" name="price" class="price" value="<?php echo $usageData['price'] ?>" min="0" required placeholder="12000"  inputmode="tel" style="ime-mode: inactive;" >円</li>
 				</ul>
 				<ul>
-					<li><input type="text" name="address" class="address" value="<?php echo $usageData['address'] ?>" placeholder="利用場所"  inputmode="kana" ></li>
-					<li><input type="text" name="roomno" class="roomNumber" value="<?php echo $usageData['roomno'] ?>" placeholder="号数" inputmode="numeric" >号室</li>
+					<li><input type="text" name="address" class="address" value="<?php echo $usageData['address'] ?>" placeholder="利用場所"  inputmode="kana" style="ime-mode: active;"></li>
+					<li><input type="tel" name="roomno" class="roomNumber" value="<?php echo $usageData['roomno'] ?>" placeholder="号数" inputmode="tel" style="ime-mode: inactive;" >号室</li>
 				</ul>
 				<!--
 				<ul class="optionBox" >
@@ -124,10 +144,12 @@ $usageData['option'] = json_decode($usageData['p_option']);
 				</ul>
 				-->
 				<ul>
-					<li><textarea name="remark" id="remark" inputmode="kana" ><?php echo $usageData['remark'] ?></textarea></li>
+					<li><textarea name="remark" id="remark" inputmode="kana" style="ime-mode: active;"><?php echo $usageData['remark'] ?></textarea></li>
 				</ul>
 			</div>
-			<div class="footer"><input type="submit" class="btn saveBtn" value="伝票を保存" ></div>
+			<div class="footer"><input type="submit" class="btn saveBtn" value="伝票を保存" >
+<?php if($_REQUEST['num'] != '非通知'){ ?><?php echo $recentCallData['time'] ?><?php } ?>
+			</div>
 		</form>
 	</div>
 </body>
@@ -144,6 +166,7 @@ $usageData['option'] = json_decode($usageData['p_option']);
 $('#select2').select2({
     width: 'resolve'
 })
+$(".timePicker").timepicker({'step': <?php echo $timeIntervalAry[$_SESSION['id']] ?>});
 </script>
 <script type="text/javascript" src="/js/commonModal.js?<?php echo BUSTING_DATE ?>"></script>
 <script>

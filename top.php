@@ -11,7 +11,9 @@
 
   $sql = "SELECT * FROM `call_history` WHERE `is_delete` = 0 AND `shop_id` = '{$_SESSION['id']}' ORDER BY `time` DESC LIMIT {$start},{$perCount}";
   $usageDataAry = getRecord($sql);
-?>
+
+  $tableSequence = explode(',',$tableSequenceAry[$_SESSION['id']]);
+  $tHeadAry = ['','<th style="width:50px !important;">No</th>','<th style="width:165px !important;">着信日時</th>','<th style="width:90px !important;">会員ID</th>','<th style="width:300px !important;">名前</th>','<th style="width:130px !important;">番号</th>','<th>住所</th>'];?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -19,14 +21,14 @@
 	<link rel="icon" href="favicon.ico" size="16x16" type="image/png">
 	<link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
 	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
-	<title>ドM会員管理システム</title>
+	<title><?php echo GROUP_NAME ?>会員管理システム</title>
 </head>
 <style>
 	#wrapper {
 		background: <?php echo $shopBgColorAry[$_SESSION['id']] ?>
 	}
 </style>
-<body id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
+<body class="<?php echo GROUP_MODE ?>" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
   <input type="hidden" id="shopid" value="<?php echo $_SESSION['id'] ?>" >
   <input type="hidden" id="mode" value="top" >
   <div id="wrapper">
@@ -53,13 +55,7 @@
           <thead>
             <tr>
               <th style="width:33px !important;"><input type="checkbox" class="checkAll" data-id="latestList" ></th>
-              <th style="width:50px !important;">No</th>
-              <th style="width:165px !important;">着信日時</th>
-              <th style="width:90px !important;">会員ID</th>
-              <th style="width:300px !important;">名前</th>
-              <th style="width:130px !important;">番号</th>
-              <th>住所</th>
-              <!-- <th>備考</th> -->
+              <?php foreach ((array)$tableSequence as $id) { echo $tHeadAry[$id];} ?>
             </tr>
           </thead>
           <tbody>
@@ -85,16 +81,19 @@ foreach((array)$usageDataAry AS $callHistoryData){
       $statCol = 'style="background: #fff"';
       break;
   }
+  $start2 = $start + $i;
+  $tBodyAry = [
+  '',
+  '<td style="width:50px !important;">'.$start2.'</td>',
+  '<td style="width:165px !important; text-align:center;">'.date("Y-m-d H:i:s",strtotime($callHistoryData['time'])).'</td>',
+  '<td style="width:90px !important; text-align:center;">'.$customerData['customer_id'].'</td>',
+  '<td style="width:300px !important; text-align:left;">'.$customerData['name'].'</td>',
+  '<td style="width:130px !important; text-align:center;">'.telSeparator($callHistoryData['num']).'</td>',
+  '<td>'.$customerData['address'].'</td>'];
 ?>
             <tr data-customer-id="<?php echo $customerData['id'] ?>" data-customer-num="<?php echo $callHistoryData['num'] ?>" <?php echo $statCol ?> >
               <td><input type="checkbox" value="<?php echo $callHistoryData['id'] ?>" ></td>
-              <td style="width:50px !important;"><?php echo $start + $i ?></td>
-              <td style="width:165px !important; text-align:center;"><?php echo date("Y-m-d H:i:s",strtotime($callHistoryData['time'])) ?></td>
-              <td style="width:90px !important; text-align:center;"><?php echo $customerData['customer_id'] ?></td>
-              <td style="width:300px !important; text-align:left;"><?php echo $customerData['name'] ?></td>
-              <td style="width:130px !important; text-align:center;"><?php echo telSeparator($callHistoryData['num']) ?></td>
-              <td><?php echo $customerData['address'] ?></td>
-              <!-- <td><?php echo $customerData['remark'] ?></td> -->
+              <?php foreach ((array)$tableSequence as $id) { echo $tBodyAry[$id];} ?>
             </tr>
 <?php $i++;}} ?>
           </tbody>

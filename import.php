@@ -118,14 +118,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<link rel="icon" href="favicon.ico" size="16x16" type="image/png">
 	<link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
 	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
-	<title>ドM会員管理システム</title>
+	<title><?php echo GROUP_NAME ?>会員管理システム</title>
 </head>
 <style>
 	#wrapper {
 		background: <?php echo $shopBgColorAry[$_SESSION['id']] ?>
 	}
 </style>
-<body id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
+<body class="<?php echo GROUP_MODE ?>" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
   <div id="wrapper">
 <?php include_once(DOCUMENT_ROOT.'/include/navi.php') ?>
     <main>

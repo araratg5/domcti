@@ -58,10 +58,16 @@ function customerModalLaunch(id, num, isCall) {
   }
 }
 function usageModalLaunch(cid,uid) {
+  if(cid == undefined || cid == null){
+    cid = '';
+  }
+  if(uid == undefined || uid == null){
+    uid = '';
+  }
   window.open(
     "usageData.php?cid=" + cid + "&uid=" + uid,
     "window_cid_usage_" + cid + uid,
-    "width=870,height=300,scrollbars=yes"
+    "width=870,height=500,scrollbars=yes"
   );
 }
 $(".timePicker").timepicker();
@@ -194,7 +200,6 @@ $(document).on("click", ".dataDelete", function () {
           cache: false,
         })
         .done(function (data) {
-          console.log(data);
           modalClose()
         })
         .fail(function (jqXHR, textStatus, errorThrown) {

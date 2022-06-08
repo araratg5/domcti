@@ -60,7 +60,7 @@
 	<link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
 	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-	<title>ドM会員管理システム</title>
+	<title><?php echo GROUP_NAME ?>会員管理システム</title>
 	<style>
 	.select2-results , .select2-results__options {
 	    max-height: 500px !important;
@@ -73,7 +73,7 @@
 		background: <?php echo $shopBgColorAry[$_SESSION['id']] ?>
 	}
 </style>
-<body id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
+<body class="<?php echo GROUP_MODE ?>" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
   <input type="hidden" id="shopid" value="<?php echo $_SESSION['id'] ?>" >
   <input type="hidden" id="mode" value="customer" >
   <div id="wrapper">
@@ -87,8 +87,8 @@
         <div id="searchBox">
           <form action="/customer.php" method="post" autocomplete="off" >
             <ul>
-              <li>会員ID：　<input type="text" value="<?php echo $_SESSION['customer_id'] ?>" name="customer_id" id="customerId" class="mr10" ></li>
-              <li>会員名：　<input type="text" value="<?php echo $_SESSION['customer_name'] ?>" name="customer_name" id="customerName" class="mr10" ></li>
+              <li>会員ID：　<input type="tel" inputmode="tel" style="ime-mode: inactive;" value="<?php echo $_SESSION['customer_id'] ?>" name="customer_id" id="customerId" class="mr10" ></li>
+              <li>会員名：　<input type="text" inputmode="kana" style="ime-mode: active;" value="<?php echo $_SESSION['customer_name'] ?>" name="customer_name" id="customerName" class="mr10" ></li>
               <li>評価：　
 								<select name="rating" id="rating" style="background:<?php if($_SESSION['rating']=='注意'){ echo '#ffc294';} elseif($_SESSION['rating']=='出禁'){ echo '#ffb5b5';} elseif($_SESSION['rating']=='優良'){ echo '#fff9cf';} ?> !important" >
                   <option value="">全て</option>
@@ -101,8 +101,8 @@
 									<option style="background: #fff !important" value="その他" <?php if($_SESSION['rating']=='その他'){ echo 'selected';} ?> >その他</option>
 								</select> 
               </li>
-              <li>電話番号：　<input type="text" value="<?php echo $_SESSION['tel'] ?>" name="tel" id="tel" class="mr10" ></li>
-              <li>住所：　<input type="text" value="<?php echo $_SESSION['address'] ?>" name="address" id="address" class="mr10" ></li>
+              <li>電話番号：　<input type="tel" inputmode="tel" style="ime-mode: active;" value="<?php echo $_SESSION['tel'] ?>" name="tel" id="tel" class="mr10" ></li>
+              <li>住所：　<input type="text" inputmode="kana" style="ime-mode: active;" value="<?php echo $_SESSION['address'] ?>" name="address" id="address" class="mr10" ></li>
               <li>登録店舗：　
 <select name="shop_id" class="shopSelector" id="select2" style="min-width:360px">
   <option value="">未選択</option>

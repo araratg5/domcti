@@ -41,20 +41,20 @@ if ($_SERVER["REQUEST_METHOD"]=="POST") {
 	<meta charset="UTF-8">
 	<link rel="icon" href="favicon.ico" size="16x16" type="image/png">
 	<link rel="stylesheet" href="css/style.css?<?php echo BUSTING_DATE ?>" media="all">
-	<title>ドM会員管理システム</title>
+	<title><?php echo GROUP_NAME ?>会員管理システム</title>
 </head>
 <style>
 	#wrapper {
 		background: <?php echo $shopBgColorAry[$_SESSION['id']] ?>
 	}
 </style>
-<body id="index" >
+<body class="<?php echo GROUP_MODE ?>" id="index" >
 	<div id="inwrap">
 		<div id="panel">
 			<form action="" method="post" >
 				<table>
 					<tr>
-						<th colspan="2"><img src="img/logo.png" id="indexLogo" alt="ドM会員管理システム LOGO"></th>
+						<th colspan="2"><img src="img/logo_<?php echo GROUP_MODE ?>.png" id="indexLogo" alt="<?php echo GROUP_NAME ?>会員管理システム LOGO"></th>
 					</tr>
 					<tr>
 						<th colspan="2"><?php echo $msg ?></th>

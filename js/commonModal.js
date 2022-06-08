@@ -1,40 +1,23 @@
-$(document).on("click","#historyList tr,.customerEdit",function () {
-    customerModalLaunch(
-      $(this).data("customer-id"),
-      $(this).data("customer-num")
-    );
-  }
-);
 $(document).on("click",".usageAdd,.usageEdit",function () {
   usageModalLaunch(
     $(this).data("cid"),
     $(this).data("uid"),
   );
 });
-function customerModalLaunch(id, num, mode) {
-  if(id == undefined || id == null){
-    id = '';
-  }
-  if(num == undefined || num == null){
-    num = '';
-  }
-  if(mode == undefined || mode == null){
-    mode = '';
-  }
-  window.open(
-    "customerData.php?cid=" + id + "&num=" + num + "&mode=" + mode,
-    "window_cid" + num,
-    "width=870,height=760,scrollbars=yes"
-  );
-}
 function usageModalLaunch(cid,uid) {
+  if(cid == undefined || cid == null){
+    cid = '';
+  }
+  if(uid == undefined || uid == null){
+    uid = '';
+  }
   window.open(
     "usageData.php?cid=" + cid + "&uid=" + uid,
     "window_cid_usage_" + cid + uid,
     "width=870,height=500,scrollbars=yes"
   );
 }
-$(".timePicker").timepicker();
+
 $("#startDate,#endDate,.startDate").datepicker({ dateFormat: "yy年mm月dd日" });
 
 $(document).on("change", ".colEdit", function () {

@@ -45,7 +45,7 @@
   $sql = "SELECT * FROM `usage_data` WHERE `is_delete` = 0 AND {$searchCondition} ORDER BY `p_date` DESC LIMIT {$start},{$perCount}";
   $usageDataAry = getRecord($sql);
 
-  $sql = "SELECT * FROM `girls` WHERE `shop_id` = '{$_SESSION['id']}'";
+  $sql = "SELECT * FROM `girls` WHERE `shop_id` = '{$_SESSION['id']}' ORDER BY CAST(`name` AS CHAR)";
   $girlDataAry = getRecord($sql,1);
 
 ?>

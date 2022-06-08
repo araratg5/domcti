@@ -38,7 +38,7 @@ $sql = "SELECT COUNT(`id`) AS `count`,`girl` FROM `usage_data` WHERE `customer_i
 $girlUsageExist = dbCount($sql);	
 $girlUsageListAry = getRecord($sql);		
 
-$sql = "SELECT * FROM `girls` WHERE `shop_id` = '{$_SESSION['id']}'";
+$sql = "SELECT * FROM `girls` WHERE `shop_id` = '{$_SESSION['id']}' ORDER BY CAST(`name` AS CHAR)";
 $girlDataAry = getRecord($sql,1);
 
 $sql = "SELECT * FROM `customer_data` WHERE `id` = '{$_REQUEST['cid']}'";
@@ -131,7 +131,7 @@ function modalClose(num){
 	localStorage.setItem('showing_number_list', showingNumberListJson);
 }
 </script>
-<body onBlur="focus()" onUnload="modalClose('<?php echo $_REQUEST['num'] ?>')" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
+<body class="<?php echo GROUP_MODE ?>" onBlur="focus()" onUnload="modalClose('<?php echo $_REQUEST['num'] ?>')" id="<?php echo str_replace(['.php','.html','/'],['','',''],$_SERVER['SCRIPT_NAME']) ?>" >
 <div id="loader"></div>
   <div id="modal">
     <!-- <div id="modalClose" onClick="close()" ><i class="fas fa-times"></i></div> -->
@@ -145,7 +145,7 @@ function modalClose(num){
 						<tr>
 							<th>会員名</th>
 							<td colspan="3">
-								<input type="text" name="name" required id="name" value="<?php echo $customerData['name'] ?>" inputmode="kana" >様
+								<input type="text" name="name" required id="name" value="<?php echo $customerData['name'] ?>" inputmode="kana" style="ime-mode: active;">様
 								<?php if($_REQUEST['cid'] != ''){ ?>
 								<span class="registShopName">（<?php echo $customerData['usage_shopname'] ?>登録）</span>
 								<?php } ?>
@@ -184,67 +184,33 @@ function modalClose(num){
 						</tr>
 						<tr>
 							<th>住所１</th>
-							<td colspan="5"><input type="text" name="address" style="width: 442px" id="address" value="<?php echo $customerData['address'] ?>" inputmode="kana" ><input type="text" style="width: 55px;" name="roomno" value="<?php echo $customerData['roomno'] ?>" inputmode="numeric" >号室</td>
+							<td colspan="5"><input type="text" name="address" style="width: 442px" id="address" value="<?php echo $customerData['address'] ?>" inputmode="kana" style="ime-mode: active;"><input type="text" style="width: 55px;" name="roomno" value="<?php echo $customerData['roomno'] ?>" inputmode="tel" style="ime-mode: inactive;" >号室</td>
 						</tr>
 						<tr>
 							<th>住所２</th>
-							<td colspan="5"><input type="text" name="address2" style="width: 442px" id="address2" value="<?php echo $customerData['address2'] ?>" inputmode="kana" ><input type="text" style="width: 55px;" name="roomno2" value="<?php echo $customerData['roomno2'] ?>" inputmode="numeric" >号室</td>
+							<td colspan="5"><input type="text" name="address2" style="width: 442px" id="address2" value="<?php echo $customerData['address2'] ?>" inputmode="kana" style="ime-mode: active;"><input type="text" style="width: 55px;" name="roomno2" value="<?php echo $customerData['roomno2'] ?>" inputmode="tel" style="ime-mode: inactive;" >号室</td>
 						</tr>
 						<tr>
 							<th>住所３</th>
-							<td colspan="5"><input type="text" name="address3" style="width: 442px" id="address3" value="<?php echo $customerData['address3'] ?>" inputmode="kana" ><input type="text" style="width: 55px;" name="roomno3" value="<?php echo $customerData['roomno3'] ?>" inputmode="numeric" >号室</td>
+							<td colspan="5"><input type="text" name="address3" style="width: 442px" id="address3" value="<?php echo $customerData['address3'] ?>" inputmode="kana" style="ime-mode: active;"><input type="text" style="width: 55px;" name="roomno3" value="<?php echo $customerData['roomno3'] ?>" inputmode="tel" style="ime-mode: inactive;" >号室</td>
 						</tr>
 						<tr>
 							<th>登録番号リスト</th>
 							<td colspan="5">
-								<input type="number" min="0" name="tel1" id="tel1" value="<?php echo $customerData['tel1'] ?>" inputmode="numeric" style="width: 208px">
-								<input type="number" min="0" name="tel2" id="tel2" value="<?php echo $customerData['tel2'] ?>" inputmode="numeric" style="width: 208px">
-								<input type="number" min="0" name="tel3" id="tel3" value="<?php echo $customerData['tel3'] ?>" inputmode="numeric" style="width: 208px">
+								<input type="tel" min="0" name="tel1" id="tel1" value="<?php echo $customerData['tel1'] ?>" inputmode="tel" style="ime-mode: inactive;" style="width: 208px">
+								<input type="tel" min="0" name="tel2" id="tel2" value="<?php echo $customerData['tel2'] ?>" inputmode="tel" style="ime-mode: inactive;" style="width: 208px">
+								<input type="tel" min="0" name="tel3" id="tel3" value="<?php echo $customerData['tel3'] ?>" inputmode="tel" style="ime-mode: inactive;" style="width: 208px">
 							</td>
 						</tr>
 						<tr>
 							<th>備考</th>
 							<td colspan="5">
-								<textarea name="remark" id="remark" inputmode="kana" ><?php echo $customerData['remark'] ?></textarea>
+								<textarea name="remark" id="remark" inputmode="kana" style="ime-mode: active;"><?php echo $customerData['remark'] ?></textarea>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 				</form>
-<!--
-							<div class="title" >統計データ</div>
-							<hr>
-								<table id="usageStatistics" >
-									<tbody><tr>
-										<th>
-										総接客数:
-										</th><td><?php echo $usageStatistics['all']['count'] ?></td>
-										<th>
-										本指名数:
-										</th><td><?php echo $usageStatistics['hon']['count'] ?></td>
-										<th>
-										パネル指名数:
-										</th><td><?php echo $usageStatistics['panel']['count'] ?></td>
-										<th>
-										フリー数	:
-										</th><td><?php echo $usageStatistics['free']['count'] ?></td>
-									</tr>
-									<tr>
-										<th>
-										利用時間合計:
-										</th><td><?php echo minuteToHourMin($usageStatistics['all']['time']) ?></td>
-										<th>
-										本指名時間合計:
-										</th><td><?php echo minuteToHourMin($usageStatistics['hon']['time']) ?></td>
-										<th>
-										売上合計:
-										</th><td><?php echo number_format($usageStatistics['all']['price']) ?></td>
-										<th>
-										本指名率:
-										</th><td><?php echo @round((($usageStatistics['hon']['count'] / $usageStatistics['all']['count']) * 100),2) ?>％</td>
-									</tr>
-								</tbody></table>
--->
 <?php if($girlUsageExist){ ?>
 <div id="usageCastList">
 	<div class="title" >利用キャスト履歴一覧　<span class="col1">赤字は本指名利用あり</span></div>
