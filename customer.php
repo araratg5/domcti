@@ -5,7 +5,7 @@
       $_SESSION['customer_id'] = $_REQUEST['customer_id'];
       $_SESSION['customer_name'] = $_REQUEST['customer_name'];
       $_SESSION['rating'] = $_REQUEST['rating'];
-      $_SESSION['tel'] = $_REQUEST['tel'];
+      $_SESSION['tel'] = str_replace('-','',$_REQUEST['tel']);
       $_SESSION['address'] = $_REQUEST['address'];
       $_SESSION['shop_id'] = $_REQUEST['shop_id'];
     } else {
