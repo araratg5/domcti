@@ -50,8 +50,8 @@ if(GROUP_MODE == 'mode1'){
 define("SITE_DB_USER_CTI",		'araratcti');
 define("SITE_DB_PASS_CTI",		'arrtcti2022');
 
-define("VER",		'0.9');
-define("BUSTING_DATE",		'202206081400');
+define("VER",		'0.9.1');
+define("BUSTING_DATE",		'202206201315');
 
 define("SALT",			'EVW53pu3Gm');
 

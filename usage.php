@@ -188,7 +188,7 @@ foreach((array)$girlDataAry AS $girlData){
               <th>金額</th>
               <th>住所</th>
               <!-- <th>備考</th> -->
-              <th>操作</th>
+              <th>利用履歴</th>
             </tr>
           </thead>
           <tbody>
@@ -216,7 +216,7 @@ foreach((array)$usageDataAry AS $usageData){
               <td><input type="checkbox" value="<?php echo $usageData['id'] ?>" ></td>
               <td><?php echo date("Y-m-d H:i",strtotime($usageData['p_date'])) ?></td>
               <td><?php echo $usageData['customer_internal_id'] ?></td>
-              <td><?php echo $usageData['name'] ?></td>
+              <td><?php echo $usageData['name'] ?><div class="btn edit customerEdit inline" data-customer-id="<?php echo $customerData['id'] ?>" data-customer-num="<?php echo $customerData['tel'] ?>" >編集</div></td>
               <td><?php echo telSeparator($usageData['tel']) ?></td>
               <td><?php echo $usageData['girl'] ?></td>
               <td><?php echo $usageData['nominate'] ?></td>
@@ -225,7 +225,7 @@ foreach((array)$usageDataAry AS $usageData){
               <td><?php echo $usageData['address'] ?></td>
               <!-- <td><?php echo $usageData['remark'] ?></td> -->
               <td>
-                <div class="btn edit usageEdit" data-cid="<?php echo $usageData['customer_id'] ?>" data-uid="<?php echo $usageData['id'] ?>" >編集</div>
+                <div class="btn edit usageEdit" data-cid="<?php echo $usageData['customer_id'] ?>" data-uid="<?php echo $usageData['id'] ?>" >確認</div>
               </td>
             </tr>
 <?php }$di++;} ?>
